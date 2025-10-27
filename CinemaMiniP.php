@@ -1,5 +1,5 @@
-<?php
 
+<?php
 session_start();
 require 'ConnMiniP.php';
 
@@ -74,10 +74,8 @@ if(isset($_POST['user_id'], $_POST['movie_id'], $_POST['location'], $_POST['date
         </select>
 
         <br><br>
-        <button type="submit" name="next">Next: Select Seats</button>
+        <a href="SelectSeats.php"><button type="button">Next: Select Seats</button>
         <a href="IndexMiniP.php"><button type="button">Back to Movies</button></a>
     </form>
 </body>
-
 </html>
-
