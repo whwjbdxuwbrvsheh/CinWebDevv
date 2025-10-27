@@ -25,7 +25,7 @@ if($_POST) {
     // Store cinema selection
     $result = CinemaSelection($user_id, $movie_id, $location, $date, $experience, $showtime);
 
-    // Redirect to seat selection page upon successful selection
+    // Redirect to cinema selection page upon successful selection
     if($result){
         header("Location: CinemaMiniP.php");
         exit();
@@ -65,6 +65,7 @@ if($_POST) {
     </table>
 </body>
 </html>
+
 
 
 
