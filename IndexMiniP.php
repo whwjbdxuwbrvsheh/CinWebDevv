@@ -7,31 +7,10 @@ $movies = GetAllMovies();
 
 // Check if user is logged in
 if (isset($_SESSION['email_address'])) {
-    echo "Hello, you are logged in as: " . $_SESSION['email_address'];
-    echo "<br><a href='LogoutMiniP.php'>Logout</a>";
+
 } else {
     echo "You are not logged in. <a href='LoginMiniP.php'>Login here</a>";
-}
 
-// Handle movie selection form submission
-if($_POST) {
-    $user_id = $_SESSION['user_id'];
-    $movie_id = $_POST['movie_id'];
-    $location = $_POST['location'];
-    $date = $_POST['date'];
-    $experience = $_POST['experience'];
-    $showtime = $_POST['showtime'];
-
-    // Store cinema selection
-    $result = CinemaSelection($user_id, $movie_id, $location, $date, $experience, $showtime);
-
-    // Redirect to cinema selection page upon successful selection
-    if($result){
-        header("Location: CinemaMiniP.php");
-        exit();
-    } else {
-        echo "<script>alert('Selection Unsuccessful');</script>";
-    }
 }
 ?>
 
@@ -56,7 +35,8 @@ if($_POST) {
                 <b><?php echo $movie['movie_title'];?></b><br>
                 <?php echo $movie['pg_rating'] . "|" . $movie['genre'] . "|" . $movie['duration'];?><br>
                 <form action="CinemaMiniP.php" method="POST">
-                <button type="submit">Select</button>
+                    <input type="hidden" name="movie_id" value="<?php echo ($movie['movie_id']); ?>">
+                    <button type="submit">Select</button>
             </form>
             </td>
 
@@ -65,6 +45,7 @@ if($_POST) {
     </table>
 </body>
 </html>
+
 
 
 
