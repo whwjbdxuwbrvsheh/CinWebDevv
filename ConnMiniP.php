@@ -53,13 +53,5 @@ function GetMovieByID($id){
     $result = $conn->query($sql);
     return $result->fetch_assoc();
 }
-
-// Store cinema selection details
-function CinemaSelection($user_id, $movie_id, $location, $date, $experience, $showtime){
-    global $conn;
-    $sql = "INSERT INTO cinema_selection (user_id, movie_id, location, date, experience, showtime) 
-           VALUES ('$user_id', '$movie_id', '$location','$date', '$experience', '$showtime')";
-   return $conn->query($sql);
-}
-
 ?>
+
