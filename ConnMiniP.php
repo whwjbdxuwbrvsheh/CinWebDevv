@@ -53,5 +53,21 @@ function GetMovieByID($id){
     $result = $conn->query($sql);
     return $result->fetch_assoc();
 }
-?>
 
+// Fetch all cinemas from the database
+function GetAllCinemas(){
+   global $conn; 
+   $sql = "SELECT * FROM cinema_selection"; 
+   $result = $conn->query($sql);
+   return $result -> fetch_all(MYSQLI_ASSOC); 
+}
+
+// Fetch cinemas by movie ID
+function GetCinemasByMovieID($movie_id){
+    global $conn;
+    $sql = "SELECT * FROM cinema_selection WHERE movie_id = '$movie_id'";
+    $result = $conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+?>
