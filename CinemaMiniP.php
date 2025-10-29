@@ -10,9 +10,9 @@ if (isset($_SESSION['email_address'])) {
     exit();
 }
 
-// Check if movie ID is set in session
-if (isset($_POST['movie_id'])) {
-    $movie_id = $_POST['movie_id'];
+// Check if movie ID is set in session //sir rassa get method better
+if (isset($_GET['movie_id'])) {
+    $movie_id = $_GET['movie_id'];
     $_movie = GetMovieByID($movie_id);
 } else {
     // If not set, redirect back to movie selection
@@ -21,7 +21,7 @@ if (isset($_POST['movie_id'])) {
 }
 
 
-$movie_id = $_POST['movie_id'];
+$movie_id = $_GET['movie_id'];
 
 // Get movie details
 $movie = GetMovieByID($movie_id);
@@ -49,7 +49,7 @@ $cinema = GetCinemasByMovieID($movie_id);
                     Date: <?php echo $cin['date']; ?><br>
                     Showtime: <?php echo $cin['showtime']; ?><br><br>
                     
-                    <form action="SeatsMiniP.php" method="POST">
+                    <form action="SeatsMiniP.php" method="GET">
                         <input type="hidden" name="cinema_id" value="<?php echo $cin['cinema_id']; ?>">
                         <input type="hidden" name="movie_id" value="<?php echo $movie['movie_id']; ?>">
                         <button type="submit">Select</button>
@@ -58,11 +58,6 @@ $cinema = GetCinemasByMovieID($movie_id);
             <?php endforeach; ?>
         </tr>
     </table>
-
-<br>
-<form action="IndexMiniP.php" method="GET">
-    <button type="submit">Back to Movie Selection</button>
-</form>
 </body>
 </html>
 
