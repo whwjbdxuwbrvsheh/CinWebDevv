@@ -112,7 +112,25 @@ function CreateBooking($user_id, $cinema_id){
     }
     return false;
 }
+// Fetch all active payment methods
+
+function GetPaymentMethods() {
+    global $conn;
+    $sql = "SELECT * FROM payment_methods WHERE active = 1";
+    $result = $conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+function MakePayment($booking_id, $method_name, $amount) {
+    global $conn;
+    $sql = "INSERT INTO payment (booking_id, payment_method, amount, payment_status) 
+            VALUES ('$booking_id', '$method_name', '$amount', 'Paid')";
+    return $conn->query($sql);
+}
+
+
 
 ?>
+
 
 
