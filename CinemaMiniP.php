@@ -58,7 +58,13 @@ $cinema = GetCinemasByMovieID($movie_id);
             <?php endforeach; ?>
         </tr>
     </table>
+
+<br>
+<form action="IndexMiniP.php" method="GET">
+    <button type="submit">Back to Movie Selection</button>
+</form>
 </body>
 </html>
+
 
 
