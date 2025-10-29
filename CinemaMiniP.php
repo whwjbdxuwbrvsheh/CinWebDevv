@@ -49,7 +49,7 @@ $cinema = GetCinemasByMovieID($movie_id);
                     Date: <?php echo $cin['date']; ?><br>
                     Showtime: <?php echo $cin['showtime']; ?><br><br>
                     
-                    <form action="SelectSeats" method="POST">
+                    <form action="SeatsMiniP.php" method="POST">
                         <input type="hidden" name="cinema_id" value="<?php echo $cin['cinema_id']; ?>">
                         <input type="hidden" name="movie_id" value="<?php echo $movie['movie_id']; ?>">
                         <button type="submit">Select</button>
@@ -60,4 +60,5 @@ $cinema = GetCinemasByMovieID($movie_id);
     </table>
 </body>
 </html>
+
 
