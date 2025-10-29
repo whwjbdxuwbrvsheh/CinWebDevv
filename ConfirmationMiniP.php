@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 require 'ConnMiniP.php';
@@ -40,7 +39,7 @@ foreach($selected_seat_ids as $seat_id) {
 }
 
 // Handle confirmation submission
-if(isset($_POST['confirm_booking'])) {
+if(isset($_GET['confirm_booking'])) {
     // Insert booking record
     $booking_id = CreateBooking($user_id, $cinema_id);
     
@@ -87,11 +86,11 @@ if(isset($_POST['confirm_booking'])) {
 
     <h3>Total Amount: RM <?php echo number_format($total_price, 2); ?></h3>
 
-    <form method="POST">
+    <form method="GET">
         <button type="submit" name="confirm_booking">Confirm & Proceed to Payment</button>
     </form>
 
-    <form action="SeatsMiniP.php" method="POST" style="display: inline;">
+    <form action="SeatsMiniP.php" method="GET" style="display: inline;">
         <input type="hidden" name="cinema_id" value="<?php echo $cinema_id; ?>">
         <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
         <button type="submit">Back to Seat Selection</button>
