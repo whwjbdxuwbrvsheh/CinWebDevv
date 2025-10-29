@@ -112,25 +112,46 @@ function CreateBooking($user_id, $cinema_id){
     }
     return false;
 }
-// Fetch all active payment methods
-
-function GetPaymentMethods() {
+// Payment function
+function CreatePayment($booking_id, $payment_method, $card_number, $card_name, $expiry_date, $cvv, $wallet_address, $crypto_amount, $amount, $status) {
     global $conn;
-    $sql = "SELECT * FROM payment_methods WHERE active = 1";
+    $sql = "INSERT INTO payment (booking_id, payment_method, card_number, card_name, expiry_date, cvv, wallet_address, crypto_amount, amount, status) 
+            VALUES ('$booking_id', '$payment_method', '$card_number', '$card_name', '$expiry_date', '$cvv', '$wallet_address', '$crypto_amount', '$amount', '$status')";
+    return $conn->query($sql);
+}
+
+// Get payment methods
+function GetPaymentMethodsByType($type) {
+    global $conn;
+    $sql = "SELECT * FROM payment_methods WHERE method_type = '$type'";
+    $result = $conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+// Get all ratings
+function GetAllRatings() {
+    global $conn;
+    $sql = "SELECT * FROM ratings ORDER BY rating_value";
     $result = $conn->query($sql);
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
-function MakePayment($booking_id, $method_name, $amount) {
+// Create review
+function CreateReview($user_id, $movie_id, $rating, $comment) {
     global $conn;
-    $sql = "INSERT INTO payment (booking_id, payment_method, amount, payment_status) 
-            VALUES ('$booking_id', '$method_name', '$amount', 'Paid')";
+    $sql = "INSERT INTO review (user_id, movie_id, rating, comment) 
+            VALUES ('$user_id', '$movie_id', '$rating', '$comment')";
     return $conn->query($sql);
 }
 
-
-
+// Ticket function
+function CreateTicket($Booking_ID, $Seat_ID, $Ticket_Type, $Ticket_Price) {
+    global $conn;
+    $sql = "INSERT INTO ticket (Booking_ID, Seat_ID, Ticket_Type, Ticket_Price) 
+            VALUES ('$Booking_ID', '$Seat_ID', '$Ticket_Type', '$Ticket_Price')";
+    return $conn->query($sql);
+}
 ?>
+
 
 
 
