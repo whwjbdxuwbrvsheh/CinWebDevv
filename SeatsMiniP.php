@@ -9,13 +9,13 @@ if (!isset($_SESSION['email_address'])) {
 }
 
 // Check if cinema_id and movie_id are set
-if (!isset($_POST['cinema_id']) || !isset($_POST['movie_id'])) {
+if (!isset($_GET['cinema_id']) || !isset($_GET['movie_id'])) {
     header("Location: CinemaMiniP.php");
     exit();
 }
 
-$cinema_id = $_POST['cinema_id'];
-$movie_id = $_POST['movie_id'];
+$cinema_id = $_GET['cinema_id'];
+$movie_id = $_GET['movie_id'];
 
 // Store in session for easier access
 $_SESSION['cinema_id'] = $cinema_id;
@@ -42,8 +42,8 @@ ksort($seats_by_row);
 $seats_by_row = array_reverse($seats_by_row, true);
 
 // Handle seat selection submission
-if(isset($_POST['selected_seats']) && !empty($_POST['selected_seats'])) {
-    $selected_seats = $_POST['selected_seats']; // Array of seat_ids
+if(isset($_GET['selected_seats']) && !empty($_GET['selected_seats'])) {
+    $selected_seats = $_GET['selected_seats']; // Array of seat_ids
     
     // Store selected seats in session for confirmation page
     $_SESSION['selected_seats'] = $selected_seats;
@@ -54,7 +54,7 @@ if(isset($_POST['selected_seats']) && !empty($_POST['selected_seats'])) {
 }
 
 // If form submitted but no seats selected
-if(isset($_POST['proceed']) && (!isset($_POST['selected_seats']) || empty($_POST['selected_seats']))) {
+if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['selected_seats']))) {
     $error_message = "Please select at least one seat before proceeding!";
 }
 ?>
@@ -96,7 +96,7 @@ if(isset($_POST['proceed']) && (!isset($_POST['selected_seats']) || empty($_POST
         VIP: RM35.00 | Premium: RM25.00 | Standard: RM15.00
     </div>
 
-    <form method="POST">
+    <form method="GET">
         <!-- Hidden input to detect form submission -->
         <input type="hidden" name="proceed" value="1">
         <input type="hidden" name="cinema_id" value="<?php echo $cinema_id; ?>">
@@ -160,7 +160,7 @@ if(isset($_POST['proceed']) && (!isset($_POST['selected_seats']) || empty($_POST
         </form>
 
         <!-- Separate form for back button -->
-        <form action="CinemaMiniP.php" method="POST" style="display: inline; margin-left: 10px;">
+        <form action="CinemaMiniP.php" method="GET" style="display: inline; margin-left: 10px;">
             <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
             <button type="submit" style="padding: 10px 30px; font-size: 16px; background-color: #dc3545; color: white; border: none; cursor: pointer;">Back to Cinema Selection</button>
         </form>
