@@ -70,4 +70,49 @@ function GetCinemasByMovieID($movie_id){
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+// Fetch cinema details by cinema_id
+function GetCinemaByID($cinema_id){
+    global $conn;
+    $sql = "SELECT * FROM cinema_selection WHERE cinema_id = '$cinema_id'";
+    $result = $conn->query($sql);
+    return $result->fetch_assoc();
+}
+
+// Fetch all seats for a specific cinema
+function GetSeatsByCinemaID($cinema_id){
+    global $conn;
+    $sql = "SELECT * FROM seat_selection WHERE cinema_id = '$cinema_id' ORDER BY seat_number";
+    $result = $conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+// Update seat availability (mark as occupied)
+function UpdateSeatAvailability($seat_id, $is_available){
+    global $conn;
+    $sql = "UPDATE seat_selection SET is_available = '$is_available' WHERE seat_id = '$seat_id'";
+    return $conn->query($sql);
+}
+
+// Get seat details by seat_id
+function GetSeatByID($seat_id){
+    global $conn;
+    $sql = "SELECT * FROM seat_selection WHERE seat_id = '$seat_id'";
+    $result = $conn->query($sql);
+    return $result->fetch_assoc();
+}
+
+// Create a new booking
+function CreateBooking($user_id, $cinema_id){
+    global $conn;
+    $booking_date = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO booking (user_id, cinema_id, booking_date, status) 
+            VALUES ('$user_id', '$cinema_id', '$booking_date', 'Pending')";
+    if($conn->query($sql)) {
+        return $conn->insert_id; // Return the booking_id
+    }
+    return false;
+}
+
 ?>
+
+
