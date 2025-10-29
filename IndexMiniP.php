@@ -34,7 +34,7 @@ if (isset($_SESSION['email_address'])) {
                 <img src="<?php echo $movie['image_path']; ?>" width="120" height="180"><br>
                 <b><?php echo $movie['movie_title'];?></b><br>
                 <?php echo $movie['pg_rating'] . "|" . $movie['genre'] . "|" . $movie['duration'];?><br>
-                <form action="CinemaMiniP.php" method="POST">
+                <form action="CinemaMiniP.php" method="GET">
                     <input type="hidden" name="movie_id" value="<?php echo ($movie['movie_id']); ?>">
                     <button type="submit">Select</button>
             </form>
@@ -45,6 +45,7 @@ if (isset($_SESSION['email_address'])) {
     </table>
 </body>
 </html>
+
 
 
 
