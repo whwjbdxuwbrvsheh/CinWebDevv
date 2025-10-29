@@ -37,6 +37,16 @@ foreach($seats as $seat) {
     $seats_by_row[$row][] = $seat;
 }
 
+// Sort seats within each row by seat number (numerically)
+foreach($seats_by_row as $row => $row_seats) {
+    usort($seats_by_row[$row], function($a, $b) {
+        // Extract numeric part from seat number (e.g., "J10" -> 10)
+        $numA = (int)substr($a['seat_number'], 1);
+        $numB = (int)substr($b['seat_number'], 1);
+        return $numA - $numB;
+    });
+}
+
 // Sort rows in reverse order (J to A) so VIP is at back
 ksort($seats_by_row);
 $seats_by_row = array_reverse($seats_by_row, true);
@@ -62,6 +72,25 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
 <html>
 <head>
     <title>Seat Selection</title>
+    <style>
+        .error-box {
+            color: red;
+            background-color: #ffcccc;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid red;
+            border-radius: 5px;
+        }
+        .warning-box {
+            color: #856404;
+            background-color: #fff3cd;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h2>Seat Selection</h2>
@@ -76,10 +105,15 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
     </p>
 
     <?php if(isset($error_message)): ?>
-        <div style="color: red; background-color: #ffcccc; padding: 10px; margin: 10px 0; border: 1px solid red;">
+        <div class="error-box">
             <strong>Error:</strong> <?php echo $error_message; ?>
         </div>
     <?php endif; ?>
+
+    <!-- Warning box for gap detection -->
+    <div id="gap-warning" class="warning-box">
+        <strong>⚠️ Warning:</strong> <span id="gap-message"></span>
+    </div>
 
     <h3>Select Your Seats</h3>
 
@@ -93,17 +127,17 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
     <!-- Seat Type Pricing -->
     <div style="margin-bottom: 20px; background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc;">
         <strong>Seat Pricing:</strong><br>
-        VIP: RM35.00 | Premium: RM25.00 | Standard: RM15.00
+        VIP: RM35.00 | Premium: RM25.00 | Standard: RM15.00<br>
+        <strong style="color: #d9534f;">⚠️ Note: You cannot leave gaps between selected seats in the same row!</strong>
     </div>
 
-    <form method="GET">
+    <form method="GET" id="seat-form">
         <!-- Hidden input to detect form submission -->
         <input type="hidden" name="proceed" value="1">
         <input type="hidden" name="cinema_id" value="<?php echo $cinema_id; ?>">
         <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
 
-
-                <!-- Screen (at the front/bottom) -->
+        <!-- Screen (at the front/bottom) -->
         <div style="background-color: #ccc; padding: 10px; text-align: center; margin-bottom: 30px; width: 80%; margin-left: auto; margin-right: auto;">
             <h4>SCREEN</h4>
         </div>
@@ -121,6 +155,8 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
                                        name="selected_seats[]" 
                                        value="<?php echo $seat['seat_id']; ?>" 
                                        id="seat_<?php echo $seat['seat_id']; ?>"
+                                       data-row="<?php echo $row_letter; ?>"
+                                       data-seat-number="<?php echo $seat['seat_number']; ?>"
                                        style="display: none;"
                                        onclick="toggleSeat(this)">
                                 <label for="seat_<?php echo $seat['seat_id']; ?>" 
@@ -132,7 +168,10 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
                                 </label>
                             <?php else: ?>
                                 <!-- Occupied seat - cannot be selected -->
-                                <div style="display: inline-block; width: 50px; height: 50px; background-color: red; border: 2px solid black; line-height: 20px; text-align: center; padding: 5px; color: white; font-weight: bold; opacity: 0.6;">
+                                <div style="display: inline-block; width: 50px; height: 50px; background-color: red; border: 2px solid black; line-height: 20px; text-align: center; padding: 5px; color: white; font-weight: bold; opacity: 0.6;"
+                                     data-row="<?php echo $row_letter; ?>"
+                                     data-occupied="true"
+                                     data-seat-number="<?php echo $seat['seat_number']; ?>">
                                     <?php echo $seat['seat_number']; ?><br>
                                     <small style="font-size: 9px;"><?php echo $seat['seat_type']; ?></small><br>
                                     <small style="font-size: 9px;">RM<?php echo $seat['price']; ?></small>
@@ -146,7 +185,6 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
 
         <br>
 
-
         <!-- Selected Seats Summary -->
         <div id="summary" style="text-align: center; margin: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #ddd;">
             <h4>Selected Seats Summary</h4>
@@ -155,16 +193,15 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
         </div>
 
         <div style="text-align: center;">
-            <button type="submit" style="padding: 10px 30px; font-size: 16px; background-color: #28a745; color: white; border: none; cursor: pointer;">Proceed to Confirmation</button>
+            <button type="submit" id="proceed-btn" style="padding: 10px 30px; font-size: 16px; background-color: #28a745; color: white; border: none; cursor: pointer;">Proceed to Confirmation</button>
         </div>
-        </form>
+    </form>
 
-        <!-- Separate form for back button -->
-        <form action="CinemaMiniP.php" method="GET" style="display: inline; margin-left: 10px;">
-            <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
-            <button type="submit" style="padding: 10px 30px; font-size: 16px; background-color: #dc3545; color: white; border: none; cursor: pointer;">Back to Cinema Selection</button>
-        </form>
-            </form>
+    <!-- Separate form for back button -->
+    <form action="CinemaMiniP.php" method="GET" style="display: inline; margin-left: 10px;">
+        <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
+        <button type="submit" style="padding: 10px 30px; font-size: 16px; background-color: #dc3545; color: white; border: none; cursor: pointer;">Back to Cinema Selection</button>
+    </form>
 
     <script>
         // Store seat data for calculation
@@ -174,10 +211,70 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
                 seatData[<?php echo $seat['seat_id']; ?>] = {
                     number: '<?php echo $seat['seat_number']; ?>',
                     type: '<?php echo $seat['seat_type']; ?>',
-                    price: <?php echo $seat['price']; ?>
+                    price: <?php echo $seat['price']; ?>,
+                    row: '<?php echo substr($seat['seat_number'], 0, 1); ?>'
                 };
             <?php endif; ?>
         <?php endforeach; ?>
+
+        // Create a map of all seats by row for gap detection
+        const allSeatsMap = {};
+        <?php foreach($seats_by_row as $row_letter => $row_seats): ?>
+            allSeatsMap['<?php echo $row_letter; ?>'] = [
+                <?php foreach($row_seats as $seat): ?>
+                {
+                    id: <?php echo $seat['seat_id']; ?>,
+                    number: '<?php echo $seat['seat_number']; ?>',
+                    available: <?php echo $seat['is_available']; ?>
+                },
+                <?php endforeach; ?>
+            ];
+        <?php endforeach; ?>
+
+        // Check for gaps in seat selection
+        function checkForGaps() {
+            const selectedSeats = document.querySelectorAll('input[name="selected_seats[]"]:checked');
+            
+            // Group selected seats by row
+            const seatsByRow = {};
+            selectedSeats.forEach(checkbox => {
+                const row = checkbox.dataset.row;
+                if (!seatsByRow[row]) {
+                    seatsByRow[row] = [];
+                }
+                seatsByRow[row].push(parseInt(checkbox.value));
+            });
+
+            // Check each row for gaps
+            for (const row in seatsByRow) {
+                const selectedInRow = seatsByRow[row].sort((a, b) => a - b);
+                const allSeatsInRow = allSeatsMap[row];
+                
+                if (selectedInRow.length > 1) {
+                    // Find the indices of selected seats
+                    const selectedIndices = selectedInRow.map(seatId => 
+                        allSeatsInRow.findIndex(s => s.id === seatId)
+                    );
+                    
+                    // Check if there are available seats between selected seats
+                    const minIndex = Math.min(...selectedIndices);
+                    const maxIndex = Math.max(...selectedIndices);
+                    
+                    for (let i = minIndex + 1; i < maxIndex; i++) {
+                        const seatBetween = allSeatsInRow[i];
+                        if (seatBetween.available === 1 && !selectedInRow.includes(seatBetween.id)) {
+                            return {
+                                hasGap: true,
+                                row: row,
+                                missingSeat: seatBetween.number
+                            };
+                        }
+                    }
+                }
+            }
+            
+            return { hasGap: false };
+        }
 
         // JavaScript to change seat color when selected and update summary
         function toggleSeat(checkbox) {
@@ -190,6 +287,30 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
                 label.style.color = 'white';
             }
             updateSummary();
+            validateSelection();
+        }
+
+        // Validate selection for gaps
+        function validateSelection() {
+            const gapCheck = checkForGaps();
+            const warningBox = document.getElementById('gap-warning');
+            const proceedBtn = document.getElementById('proceed-btn');
+            
+            if (gapCheck.hasGap) {
+                warningBox.style.display = 'block';
+                document.getElementById('gap-message').textContent = 
+                    `You cannot leave seat ${gapCheck.missingSeat} empty in row ${gapCheck.row}. Please select consecutive seats!`;
+                proceedBtn.disabled = true;
+                proceedBtn.style.opacity = '0.5';
+                proceedBtn.style.cursor = 'not-allowed';
+                return false;
+            } else {
+                warningBox.style.display = 'none';
+                proceedBtn.disabled = false;
+                proceedBtn.style.opacity = '1';
+                proceedBtn.style.cursor = 'pointer';
+                return true;
+            }
         }
 
         // Update selected seats summary
@@ -217,8 +338,14 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
                 document.getElementById('total-price').innerHTML = 'Total: RM 0.00';
             }
         }
+
+        // Prevent form submission if there are gaps
+        document.getElementById('seat-form').addEventListener('submit', function(e) {
+            if (!validateSelection()) {
+                e.preventDefault();
+                alert('Please fix the seat selection errors before proceeding!');
+            }
+        });
     </script>
 </body>
 </html>
-
-
