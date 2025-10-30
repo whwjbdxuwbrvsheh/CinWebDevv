@@ -12,6 +12,26 @@ if (isset($_SESSION['email_address'])) {
     echo "You are not logged in. <a href='LoginMiniP.php'>Login here</a>";
 
 }
+
+// Get user info
+$email = $_SESSION['email_address'];
+$sql_user = "SELECT * FROM users WHERE email_address = '$email'";
+$user_result = $conn->query($sql_user);
+$user = $user_result->fetch_assoc();
+$user_id = $user['user_id'];
+
+// Check if user has existing booking
+$sql_booking = "SELECT booking_id FROM booking WHERE user_id = '$user_id' ORDER BY booking_id DESC LIMIT 1";
+$booking_result = $conn->query($sql_booking);
+
+$has_booking = false;
+$latest_booking_id = null;
+
+if ($booking_result && $booking_result->num_rows > 0) {
+    $has_booking = true;
+    $latest_booking = $booking_result->fetch_assoc();
+    $latest_booking_id = $latest_booking['booking_id'];
+}
 ?>
 
 
@@ -23,6 +43,15 @@ if (isset($_SESSION['email_address'])) {
     <h2>Movie Selection</h2>
     <p>Choose Your Movie</p>
     <p>Welcome <?php echo $_SESSION['email_address']; ?>! | <a href="LogoutMiniP.php">Logout</a></p>
+
+    <?php if ($has_booking): ?>
+    <div>
+        You have an existing booking! 
+        <a href="TicketMiniP.php?booking_id=<?php echo $latest_booking_id; ?>">
+            View My Ticket
+        </a>
+    </div>
+<?php endif; ?>
 
     <h3>Now Showing</h3>
 
@@ -45,11 +74,3 @@ if (isset($_SESSION['email_address'])) {
     </table>
 </body>
 </html>
-
-
-
-
-
-
-
-
