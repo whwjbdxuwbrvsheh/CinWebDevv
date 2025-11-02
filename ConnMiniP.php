@@ -23,6 +23,14 @@ function login($email_address, $password) {
    return $result->fetch_assoc();
 }
 
+// Fetch user details by email address
+function GetUserByEmail($email) {
+    global $conn;
+    $sql = "SELECT * FROM users WHERE email_address = '$email'";
+    $result = $conn->query($sql);
+    return $result->fetch_assoc();
+}
+
 // Fetch user details by ID
 function SelectUsersByID($id){
    global $conn;
@@ -53,6 +61,18 @@ function GetMovieByID($id){
     $result = $conn->query($sql);
     return $result->fetch_assoc();
 }
+
+// Fetch movie details by booking_id
+function GetMovieByBookingID($booking_id) {
+    global $conn;
+    $sql = "SELECT m.* FROM booking b
+            JOIN cinema_selection c ON b.cinema_id = c.cinema_id
+            JOIN movies m ON c.movie_id = m.movie_id
+            WHERE b.booking_id = '$booking_id'";
+    $result = $conn->query($sql);
+    return $result->fetch_assoc();
+}
+
 
 // Fetch all cinemas from the database
 function GetAllCinemas(){
@@ -136,11 +156,12 @@ function GetAllRatings() {
 }
 
 // Create review
-function CreateReview($user_id, $movie_id, $rating, $comment) {
+function CreateReview($user_id, $rating, $comment) {
     global $conn;
-    $sql = "INSERT INTO review (user_id, movie_id, rating, comment) 
-            VALUES ('$user_id', '$movie_id', '$rating', '$comment')";
+    $sql = "INSERT INTO review (user_id, rating, comment) 
+            VALUES ('$user_id', '$rating', '$comment')";
     return $conn->query($sql);
+
 }
 
 // Ticket function
@@ -150,7 +171,29 @@ function CreateTicket($Booking_ID, $Seat_ID, $Ticket_Type, $Ticket_Price) {
             VALUES ('$Booking_ID', '$Seat_ID', '$Ticket_Type', '$Ticket_Price')";
     return $conn->query($sql);
 }
-?>
+
+// Fetch booking details by booking ID (includes movie + cinema)
+function GetBookingDetailsByID($booking_id) {
+    global $conn;
+    $sql = "SELECT b.*, cs.*, m.movie_title, m.genre, m.pg_rating, m.duration
+            FROM booking b
+            JOIN cinema_selection cs ON b.cinema_id = cs.cinema_id
+            JOIN movies m ON cs.movie_id = m.movie_id
+            WHERE b.booking_id = '$booking_id'";
+    $result = $conn->query($sql);
+    return $result->fetch_assoc();
+}
+
+// Fetch tickets for a specific booking
+function GetTicketsByBookingID($booking_id) {
+    global $conn;
+    $sql = "SELECT t.*, s.seat_number 
+            FROM ticket t
+            JOIN seat_selection s ON t.Seat_ID = s.seat_id
+            WHERE t.Booking_ID = '$booking_id'";
+    $result = $conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 
 
 
