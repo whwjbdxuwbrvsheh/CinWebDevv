@@ -2,73 +2,188 @@
 session_start();
 require 'ConnMiniP.php';
 
-if ($_SESSION['email_address']) {
-
-} else {
+// Check if user is logged in
+if (!isset($_SESSION['email_address'])) {
     echo "You are not logged in. <a href='LoginMiniP.php'>Login here</a>";
     exit();
 }
 
-if ($_GET['booking_id']) {
-    $booking_id = $_GET['booking_id'];
-} else {
+// Get booking ID from GET
+if (!isset($_GET['booking_id'])) {
     echo "No booking found";
     exit();
 }
+$booking_id = $_GET['booking_id'];
 
-$email = $_SESSION['email_address'];
-$user_sql = "SELECT * FROM users WHERE email_address = '$email'";
-$user_result = $conn->query($user_sql);
-$user = $user_result->fetch_assoc();
+// Fetch user info
+$user = GetUserByEmail($_SESSION['email_address']);
 $user_id = $user['user_id'];
 
 // Fetch booking details
-$booking_sql = "SELECT b.*, cs.*, m.movie_title, m.genre, m.pg_rating, m.duration 
-                FROM booking b 
-                JOIN cinema_selection cs ON b.cinema_id = cs.cinema_id 
-                JOIN movies m ON cs.movie_id = m.movie_id 
-                WHERE b.booking_id = '$booking_id'";
-$result = $conn->query($booking_sql);
-$booking = $result->fetch_assoc();
+$booking = GetBookingDetailsByID($booking_id);
+if (!$booking) {
+    echo "Booking not found!";
+    exit();
+}
 
-$tickets_sql = "SELECT t.*, s.seat_number 
-                FROM ticket t 
-                JOIN seat_selection s ON t.Seat_ID = s.seat_id 
-                WHERE t.Booking_ID = '$booking_id'";
-$tickets_result = $conn->query($tickets_sql);
-$tickets = $tickets_result->fetch_all(MYSQLI_ASSOC);
+// Fetch tickets
+$tickets = GetTicketsByBookingID($booking_id);
 ?>
 
-<html>
+<html lang="en">
 <head>
-    <title>Ticket Page</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Ticket | ZTAVerse</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================
+   CSS - Styling for E-Ticket
+=========================== */
+:root {
+    --bg-color: linear-gradient(135deg,#0a0a0a,#1a0000,#330000);
+    --text-color: #fff;
+    --card-bg: rgba(20,20,20,0.85);
+    --accent-color: #ff1a1a;
+}
+.light-mode {
+    --bg-color: linear-gradient(135deg,#fff0f0,#ffeaea);
+    --text-color: #111;
+    --card-bg: linear-gradient(145deg,#ffcccc,#ff9999);
+    --accent-color: #ff4d4d;
+}
+body {
+    font-family: 'Saira Semi Condensed', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    transition: background 0.5s, color 0.5s;
+}
+/* ---------------- Navbar ---------------- */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: linear-gradient(90deg,#220000,#440000);
+    padding: 15px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    backdrop-filter: blur(8px);
+}
+.navbar h1 {
+    color: var(--accent-color);
+    font-size: 2rem;
+    font-weight: 900;
+}
+.navbar a {
+    margin-left: 25px;
+    color: #fff;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.navbar a:hover { color: #ff4d4d; }
+.toggle-btn {
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.4s;
+}
+.toggle-btn:hover { background: var(--accent-color); }
+.light-mode .toggle-btn { background: #ddd; color: #000; }
+
+/* ---------------- Ticket Card ---------------- */
+.ticket-card {
+    background: var(--card-bg);
+    border-radius: 1rem;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px var(--accent-color);
+    overflow: hidden;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px dashed rgba(255,255,255,0.2);
+    position: relative;
+    transition: transform 0.3s;
+}
+.ticket-card:hover { transform: scale(1.02); }
+.ticket-top, .ticket-bottom { padding: 15px 20px; }
+.ticket-top h3 { color: var(--accent-color); font-size: 1.4rem; margin-bottom: 5px; }
+.ticket-bottom { display: flex; justify-content: flex-start; align-items: center; border-top: 2px dashed rgba(255,255,255,0.2); }
+
+/* ---------------- Buttons ---------------- */
+.print-btn {
+    background: #ff1a1a;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 24px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+.print-btn:hover { background: #ff4d4d; }
+</style>
 </head>
+
 <body>
-    <h2>E-Ticket</h2>
-    <p>Welcome <?php echo $_SESSION['email_address']; ?>! | <a href="LogoutMiniP.php">Logout</a></p>
+<!-- ================= Navbar ================= -->
+<div class="navbar">
+    <h1>ZTAVerse</h1>
+    <div class="flex items-center">
+        <a href="LogoutMiniP.php">Logout</a>
+        <button id="modeToggle" class="toggle-btn ml-4">☀ Light Mode</button>
+    </div>
+</div>
 
-    <h3>Booking Confirmed!</h3>
+<!-- ================= Ticket Content ================= -->
+<div class="pt-28 px-6">
+    <h2 class="text-3xl font-bold mb-6 text-center">🎫 E-Ticket</h2>
+    <p class="text-center mb-8">Welcome <?php echo $_SESSION['email_address']; ?>!</p>
 
-    <p><b>Movie Details</b></p>
-    <p>Movie: <?php echo $booking['movie_title']; ?></p>
-    <p>Genre: <?php echo $booking['genre']; ?></p>
-    <p>Rating: <?php echo $booking['pg_rating']; ?></p>
-    <p>Duration: <?php echo $booking['duration']; ?></p>
-
-    <p><b>Cinema Details</b></p>
-    <p>Location: <?php echo $booking['location']; ?></p>
-    <p>Date: <?php echo $booking['date']; ?></p>
-    <p>Time: <?php echo $booking['showtime']; ?></p>
-    <p>Experience: <?php echo $booking['experience']; ?></p>
-
-    <p><b>Tickets</b></p>
+    <!-- Loop through tickets -->
     <?php foreach($tickets as $ticket): ?>
-        <p>Ticket <?php echo $ticket['Ticket_ID']; ?> - Seat <?php echo $ticket['seat_number']; ?> - <?php echo $ticket['Ticket_Type']; ?> - RM<?php echo $ticket['Ticket_Price']; ?></p>
+        <div class="ticket-card">
+            <div class="ticket-top">
+                <h3><?php echo $booking['movie_title']; ?></h3>
+                <p><b>Genre:</b> <?php echo $booking['genre']; ?> | <b>Rating:</b> <?php echo $booking['pg_rating']; ?> | <b>Duration:</b> <?php echo $booking['duration']; ?></p>
+                <p><b>Cinema:</b> <?php echo $booking['location']; ?> | <b>Date:</b> <?php echo $booking['date']; ?> | <b>Time:</b> <?php echo $booking['showtime']; ?></p>
+                <p><b>Experience:</b> <?php echo $booking['experience']; ?></p>
+            </div>
+            <div class="ticket-bottom">
+                <p>🎟 <?php echo $ticket['Ticket_Type']; ?> - Seat <?php echo $ticket['seat_number']; ?> - RM<?php echo $ticket['Ticket_Price']; ?></p>
+            </div>
+            <p class="text-center mt-2">Booking Ref: <b><?php echo $booking_id; ?></b></p>
+        </div>
     <?php endforeach; ?>
 
-    <p><b>Booking Reference:</b> <?php echo $booking_id; ?></p>
+    <div class="text-center mt-8 flex justify-center gap-4">
+        <a href="IndexMiniP.php" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded transition">Book Another Movie</a>
+        <button class="print-btn" onclick="openPrint()">🖨 Print Ticket</button>
+    </div>
+</div>
 
-    <p><a href="IndexMiniP.php">Book Another Movie</a></p>
+<!-- ================= Scripts ================= -->
+<script>
+const toggleBtn = document.getElementById('modeToggle');
+toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('light-mode');
+    toggleBtn.textContent = document.body.classList.contains('light-mode') ? '🌙 Dark Mode' : '☀ Light Mode';
+});
+
+// Open Print Ticket page
+function openPrint() {
+    const bookingId = "<?php echo $booking_id; ?>";
+    window.open('PrintTicketMiniP.php?booking_id=' + bookingId, '_blank');
+}
+</script>
+
 </body>
 </html>
+
 
