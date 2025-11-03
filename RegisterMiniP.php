@@ -22,232 +22,502 @@ if($_POST) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700&family=Saira+Semi+Condensed:wght@400;700&display=swap" rel="stylesheet">
-  
-  <style>
-    body {
-      background: url('https://i.pinimg.com/1200x/59/ec/a7/59eca7aafe53bb2b91466b48f57fa731.jpg') center/cover no-repeat;
-      font-family: 'Saira Semi Condensed', 'Arial', sans-serif;
-      color: #fff;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - TZA Theatre Zenith Atrium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // --- Tailwind Configuration (Cinematic Red Theme) ---
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#a40000', // CINEMATIC RED 
+                            600: '#8e0000', 
+                            700: '#730000', 
+                        },
+                        darkbg: '#0a0a0a', // Near-black background
+                        cardbg: '#181818', // Slightly lighter for card contrast
+                        lightcard: '#f0f0f0', 
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* --- Global Transitions --- */
+        * {
+            transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out, transform 0.3s ease-in-out;
+        }
 
-    /* === Animation === */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(25px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        /* Glass morphism effect */
+        .glass-container {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
 
-    /* === Heading === */
-    h2 {
-      font-family: 'Manrope', sans-serif;
-      font-size: 2.5em;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 0 10px rgba(255,255,255,0.4), 0 0 30px rgba(255,0,0,0.2);
-      transition: transform 0.4s, text-shadow 0.4s;
-    }
-    h2:hover { transform: scale(1.03); text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(255,0,0,0.5); }
+        .dark .glass-container {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(164, 0, 0, 0.2);
+        }
 
-    /* === Input === */
-    .input-field, .select-box {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 8px;
-      background: rgba(19,19,19,0.62);
-      color: #fff;
-      font-size: 1em;
-      box-shadow: 0 0 8px rgba(255,255,255,0.2);
-      transition: background-color 0.3s, box-shadow 0.4s, transform 0.2s;
-    }
-    .input-field:focus, .select-box:hover {
-      background: rgba(25,25,25,0.8);
-      box-shadow: 0 0 15px rgba(255,255,255,0.7), 0 0 25px rgba(255,255,255,0.3);
-      transform: scale(1.02);
-      outline: none;
-    }
+        /* Input styling */
+        .input-field, .select-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
 
-    /* === Date Icon === */
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      filter: invert(1) brightness(2);
-      opacity: 0.9;
-      cursor: pointer;
-      transition: transform 0.2s, opacity 0.2s;
-    }
-    input[type="date"]::-webkit-calendar-picker-indicator:hover {
-      transform: scale(1.2);
-      opacity: 1;
-    }
+        .input-field:focus, .select-box:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(164, 0, 0, 0.5);
+            outline: none;
+            transform: scale(1.02);
+        }
 
-    /* === Radio === */
-    input[type="radio"] {
-      appearance: none;
-      border: 2px solid rgba(255,255,255,0.6);
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-      position: relative;
-      transition: 0.25s;
-    }
-    input[type="radio"]:checked {
-      border-color: #fff;
-      box-shadow: 0 0 8px rgba(255,255,255,0.8);
-    }
-    input[type="radio"]:checked::before {
-      content: '';
-      position: absolute;
-      top: 4px; left: 4px;
-      width: 8px; height: 8px;
-      background: #fff;
-      border-radius: 50%;
-      box-shadow: 0 0 6px rgba(255,255,255,0.8);
-    }
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Inter', sans-serif;
+        }
 
-    /* === Custom Dropdown === */
-    .custom-select { position: relative; width: 100%; }
-    .select-box { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-    .select-arrow { width: 18px; height: 18px; fill: #ccc; transition: 0.3s; }
-    .select-box:hover .select-arrow { fill: #fff; transform: rotate(180deg); }
+        /* Button styling */
+        .register-btn {
+            background: #a40000;
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
 
-    .options {
-      position: absolute;
-      width: 100%;
-      margin-top: 5px;
-      padding: 0;
-      list-style: none;
-      background: rgba(19,19,19,0.95);
-      border-radius: 8px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.2);
-      display: none;
-      z-index: 10;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-    .options li {
-      padding: 12px 15px;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
-    }
-    .options li:hover {
-      background: rgba(255,255,255,0.15);
-      transform: scale(1.01);
-    }
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(164, 0, 0, 0.4);
+            background: #8e0000;
+        }
 
-    /* === Link === */
-    .register-link a {
-      color: #fff;
-      text-decoration: none;
-      position: relative;
-      transition: color 0.3s, text-shadow 0.3s, transform 0.2s;
-    }
-    .register-link a:hover {
-      color: #a40000;
-      text-shadow: 0 0 8px rgba(185,2,2,0.97);
-      transform: scale(1.05);
-    }
-    .register-link a::after {
-      content: '';
-      position: absolute;
-      left: 0; bottom: -2px;
-      width: 0; height: 2px;
-      background: #ff0000e8;
-      transition: width 0.3s;
-    }
-    .register-link a:hover::after { width: 100%; }
-  </style>
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Link styling */
+        .login-link {
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-link:hover {
+            color: #ff6b6b;
+        }
+
+        .login-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: #ff6b6b;
+            transition: width 0.3s ease;
+        }
+
+        .login-link:hover::after {
+            width: 100%;
+        }
+
+        /* Radio button styling */
+        input[type="radio"] {
+            appearance: none;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            position: relative;
+            transition: 0.25s;
+        }
+
+        input[type="radio"]:checked {
+            border-color: #a40000;
+        }
+
+        input[type="radio"]:checked::before {
+            content: '';
+            position: absolute;
+            top: 4px; 
+            left: 4px;
+            width: 8px; 
+            height: 8px;
+            background: #a40000;
+            border-radius: 50%;
+        }
+
+        /* Date input styling */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(2);
+            opacity: 0.9;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+
+        /* Custom dropdown styling */
+        .custom-select { 
+            position: relative; 
+            width: 100%; 
+        }
+
+        .select-box { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            cursor: pointer; 
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .select-arrow { 
+            width: 18px; 
+            height: 18px; 
+            fill: #ccc; 
+            transition: 0.3s; 
+        }
+
+        .select-box:hover .select-arrow { 
+            fill: #fff; 
+            transform: rotate(180deg); 
+        }
+
+        .options {
+            position: absolute;
+            width: 100%;
+            margin-top: 5px;
+            padding: 0;
+            list-style: none;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            display: none;
+            z-index: 10;
+            max-height: 220px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .options li {
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .options li:hover {
+            background: rgba(164, 0, 0, 0.3);
+            transform: scale(1.01);
+        }
+
+        /* Background animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Clean typography */
+        .form-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: white;
+        }
+
+        .form-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .heading {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Ensure all text is visible in both light and dark modes */
+        .container-text {
+            color: white;
+        }
+
+        /* Black background for entire page in light mode */
+        body:not(.dark) {
+            background: #0a0a0a !important;
+        }
+    </style>
 </head>
+<body class="bg-darkbg text-white min-h-screen font-sans flex items-center justify-center">
+    
+    <!-- Background Image with Subtle Overlay -->
+    <div class="absolute inset-0 z-0">
+        <img src="https://i.pinimg.com/1200x/f0/b0/c3/f0b0c339e09dfaa74f7c8f68b94a5ce3.jpg" 
+             alt="Cinema Background" 
+             class="w-full h-full object-cover opacity-80 dark:opacity-60">
+        <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80"></div>
+    </div>
 
-<body class="flex justify-center items-center min-h-screen">
-  <div class="bg-[rgba(15,15,15,0.88)] backdrop-blur-md rounded-2xl shadow-[0_10px_75px_rgba(0,0,0,1)] w-[950px] max-w-[95%] px-16 py-14 animate-[fadeUp_0.8s_ease_forwards]">
-    <h2 class="text-center mb-10">Register</h2>
+    <!-- Theme Toggle Button -->
+    <div class="absolute top-6 right-6 z-50">
+        <button id="theme-toggle" title="Toggle Dark Mode" class="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:text-primary-500 dark:hover:text-primary-500 transition-all duration-300 shadow-lg hover:scale-110">
+            <i class="fas fa-moon dark:hidden text-xl"></i>
+            <i class="fas fa-sun hidden dark:block text-xl"></i>
+        </button>
+    </div>
 
-    <form class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6 w-full">
-      <!-- Left -->
-      <div class="space-y-3">
-        <input type="text" class="input-field" placeholder="Full Name" required>
-        <input type="tel" class="input-field" placeholder="Mobile Number" required>
-        <input type="email" class="input-field" placeholder="Email Address" required>
-        <input type="password" class="input-field" placeholder="Password" required>
-        <input type="date" class="input-field" required>
-      </div>
+    <!-- Main Content - Single Centered Container -->
+    <div class="relative z-10 w-full max-w-4xl mx-4">
+        <div class="glass-container rounded-2xl overflow-hidden animate-fade-in-up border border-white/10 p-12">
+            
+            <!-- Header -->
+            <div class="text-center mb-8 container-text">
+                <h2 class="text-3xl heading mb-2">
+                    Create Account
+                </h2>
+                <p class="text-white/90 form-text">
+                    Join Theatre Zenith Atrium
+                </p>
+            </div>
 
-      <!-- Right -->
-      <div class="space-y-3">
-        <div class="flex items-center space-x-6">
-          <label class="flex items-center space-x-2"><input type="radio" name="gender" required><span>Male</span></label>
-          <label class="flex items-center space-x-2"><input type="radio" name="gender"><span>Female</span></label>
+            <!-- Registration Form -->
+            <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Left Column -->
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-white/90 text-sm form-label">Full Name</label>
+                        <input type="text" 
+                               name="full_name" 
+                               placeholder="Enter your full name" 
+                               required
+                               class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/70">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-white/90 text-sm form-label">Mobile Number</label>
+                        <input type="tel" 
+                               name="mobile_number" 
+                               placeholder="Enter your mobile number" 
+                               required
+                               class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/70">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-white/90 text-sm form-label">Email Address</label>
+                        <input type="email" 
+                               name="email_address" 
+                               placeholder="Enter your email" 
+                               required
+                               class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/70">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-white/90 text-sm form-label">Password</label>
+                        <input type="password" 
+                               name="password" 
+                               placeholder="Create a password" 
+                               required
+                               class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/70">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-white/90 text-sm form-label">Date of Birth</label>
+                        <input type="date" 
+                               name="date_of_birth" 
+                               required
+                               class="w-full px-4 py-3 rounded-lg input-field text-white">
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-white/90 text-sm form-label">Gender</label>
+                        <div class="flex items-center space-x-6">
+                            <label class="flex items-center space-x-2 text-white form-text">
+                                <input type="radio" name="gender" value="Male" required>
+                                <span>Male</span>
+                            </label>
+                            <label class="flex items-center space-x-2 text-white form-text">
+                                <input type="radio" name="gender" value="Female">
+                                <span>Female</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-white/90 text-sm form-label">Race</label>
+                        <div class="custom-select">
+                            <div class="select-box" onclick="toggleDropdown(this)">
+                                <span class="form-text">Select Race</span>
+                                <svg class="select-arrow" viewBox="0 0 20 20"><path d="M5 7l5 5 5-5H5z"/></svg>
+                            </div>
+                            <ul class="options">
+                                <li>Malay</li><li>Chinese</li><li>Indian</li><li>Other</li>
+                            </ul>
+                            <input type="hidden" name="race">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-white/90 text-sm form-label">Profession</label>
+                        <div class="custom-select">
+                            <div class="select-box" onclick="toggleDropdown(this)">
+                                <span class="form-text">Select Profession</span>
+                                <svg class="select-arrow" viewBox="0 0 20 20"><path d="M5 7l5 5 5-5H5z"/></svg>
+                            </div>
+                            <ul class="options">
+                                <li>Student</li><li>Corporate</li><li>Business Owner</li><li>Unemployed</li><li>Others</li>
+                            </ul>
+                            <input type="hidden" name="profession">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-white/90 text-sm form-label">Location</label>
+                        <div class="custom-select">
+                            <div class="select-box" onclick="toggleDropdown(this)">
+                                <span class="form-text">Select Location</span>
+                                <svg class="select-arrow" viewBox="0 0 20 20"><path d="M5 7l5 5 5-5H5z"/></svg>
+                            </div>
+                            <ul class="options">
+                                <li>Johor</li><li>Kedah</li><li>Kelantan</li><li>Melaka</li><li>Negeri Sembilan</li><li>Pahang</li><li>Penang</li><li>Perak</li><li>Perlis</li><li>Sabah</li><li>Sarawak</li><li>Selangor</li><li>Terengganu</li><li>Kuala Lumpur</li><li>Putrajaya</li><li>Labuan</li>
+                            </ul>
+                            <input type="hidden" name="location">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" 
+                        class="col-span-2 w-full py-4 rounded-lg register-btn text-lg font-semibold mt-4 transform hover:scale-[1.02] transition-transform">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Account
+                </button>
+            </form>
+
+            <div class="mt-6 text-center container-text">
+                <p class="text-white/90 form-text">
+                    Already have an account? 
+                    <a href="LoginMiniP.php" class="login-link font-semibold ml-1">
+                        Sign In Here
+                    </a>
+                </p>
+            </div>
         </div>
 
-        <!-- Dropdowns -->
-        <div class="custom-select">
-          <div class="select-box" onclick="toggleDropdown(this)">
-            <span>Select Race</span>
-            <svg class="select-arrow" viewBox="0 0 20 20"><path d="M5 7l5 5 5-5H5z"/></svg>
-          </div>
-          <ul class="options">
-            <li>Malay</li><li>Chinese</li><li>Indian</li><li>Other</li>
-          </ul>
+        <!-- Footer Note -->
+        <div class="text-center mt-6 container-text">
+            <p class="text-white/70 text-sm form-text">
+                © 2023 Theatre Zenith Atrium
+            </p>
         </div>
+    </div>
 
-        <div class="custom-select">
-          <div class="select-box" onclick="toggleDropdown(this)">
-            <span>Select Profession</span>
-            <svg class="select-arrow" viewBox="0 0 20 20"><path d="M5 7l5 5 5-5H5z"/></svg>
-          </div>
-          <ul class="options">
-            <li>Student</li><li>Corporate</li><li>Business Owner</li><li>Unemployed</li><li>Others</li>
-          </ul>
-        </div>
+    <script>
+        // --- Theme Toggle Functionality ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        // 1. Initial setup (Check localStorage or system preference)
+        const isDarkMode = localStorage.getItem('color-theme') === 'dark' || 
+                            (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-        <div class="custom-select">
-          <div class="select-box" onclick="toggleDropdown(this)">
-            <span>Select Location</span>
-            <svg class="select-arrow" viewBox="0 0 20 20"><path d="M5 7l5 5 5-5H5z"/></svg>
-          </div>
-          <ul class="options">
-            <li>Johor</li><li>Kedah</li><li>Kelantan</li><li>Melaka</li><li>Negeri Sembilan</li><li>Pahang</li><li>Penang</li><li>Perak</li><li>Perlis</li><li>Sabah</li><li>Sarawak</li><li>Selangor</li><li>Terengganu</li><li>Kuala Lumpur</li><li>Putrajaya</li><li>Labuan</li>
-          </ul>
-        </div>
-      </div>
+        if (isDarkMode) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+        
+        // 2. Toggle Handler
+        themeToggle.addEventListener('click', function() {
+            const isCurrentlyDark = htmlElement.classList.toggle('dark');
+            
+            if (isCurrentlyDark) {
+                localStorage.setItem('color-theme', 'dark');
+            } else {
+                localStorage.setItem('color-theme', 'light');
+            }
+        });
 
-      <input type="submit" value="Register" class="col-span-2 bg-white text-black font-bold text-lg py-4 rounded-lg mt-5 transition-all duration-300 hover:scale-105 hover:bg-gray-100 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)] active:scale-95">
-    </form>
+        // Dropdown functionality
+        function toggleDropdown(el) {
+            const dropdown = el.nextElementSibling;
+            const all = document.querySelectorAll('.options');
+            all.forEach(opt => opt !== dropdown && (opt.style.display = 'none'));
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
 
-    <p class="register-link mt-8 text-sm text-[rgba(255,255,255,0.7)] text-center">
-      Already have an account? <a href="LoginMiniP.php">Login here</a>
-    </p>
-  </div>
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.custom-select')) {
+                document.querySelectorAll('.options').forEach(opt => opt.style.display = 'none');
+            }
+        });
 
-  <script>
-    function toggleDropdown(el) {
-      const dropdown = el.nextElementSibling;
-      const all = document.querySelectorAll('.options');
-      all.forEach(opt => opt !== dropdown && (opt.style.display = 'none'));
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
+        document.querySelectorAll('.options li').forEach(li => {
+            li.addEventListener('click', e => {
+                const customSelect = e.target.closest('.custom-select');
+                const box = customSelect.querySelector('.select-box span');
+                const hiddenInput = customSelect.querySelector('input[type="hidden"]');
+                
+                box.textContent = e.target.textContent;
+                hiddenInput.value = e.target.textContent;
+                e.target.parentElement.style.display = 'none';
+            });
+        });
 
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.custom-select')) {
-        document.querySelectorAll('.options').forEach(opt => opt.style.display = 'none');
-      }
-    });
-
-    document.querySelectorAll('.options li').forEach(li => {
-      li.addEventListener('click', e => {
-        const box = e.target.closest('.custom-select').querySelector('.select-box span');
-        box.textContent = e.target.textContent;
-        e.target.parentElement.style.display = 'none';
-      });
-    });
-  </script>
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.input-field');
+            
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('transform', 'scale-105');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('transform', 'scale-105');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
