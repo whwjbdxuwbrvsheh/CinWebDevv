@@ -10,7 +10,7 @@ if (isset($_SESSION['email_address'])) {
     exit();
 }
 
-// Check if movie ID is set in session //sir rassa get method better
+// Check if movie ID is set in session
 if (isset($_GET['movie_id'])) {
     $movie_id = $_GET['movie_id'];
     $_movie = GetMovieByID($movie_id);
@@ -29,215 +29,335 @@ $movie = GetMovieByID($movie_id);
 $cinema = GetCinemasByMovieID($movie_id);
 ?>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ZTAVerse | Cinema Selection</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700&family=Saira+Semi+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Selection - TZA Theatre Zenith Atrium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // --- Tailwind Configuration (Cinematic Red Theme) ---
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#a40000', // CINEMATIC RED 
+                            600: '#8e0000', 
+                            700: '#730000', 
+                        },
+                        darkbg: '#0a0a0a', // Near-black background
+                        cardbg: '#181818', // Slightly lighter for card contrast
+                        lightcard: '#f0f0f0', 
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* --- Global Transitions --- */
+        * {
+            transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out, transform 0.3s ease-in-out;
+        }
 
-  <style>
-:root {
-  --bg-color: linear-gradient(135deg, #0a0a0a, #1a0000, #330000);
-  --text-color: #fff;
-  --card-bg: rgba(20,20,20,0.85);
-  --accent-color: #ff1a1a;
-}
+        /* Black background for light mode text visibility */
+        body {
+            background-color: #000000;
+        }
 
-.light-mode {
-  --bg-color: linear-gradient(135deg, #fff0f0, #ffeaea);
-  --text-color: #111;
-  --card-bg: linear-gradient(145deg, #ffcccc, #ff9999);
-  --accent-color: #ff4d4d;
-}
+        /* Glass morphism effect */
+        .glass-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
 
-body {
-  font-family: 'Saira Semi Condensed', sans-serif;
-  background: var(--bg-color);
-  color: var(--text-color);
-  margin: 0;
-  overflow-x: hidden;
-  transition: background 0.5s, color 0.5s;
-}
+        .dark .glass-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(164, 0, 0, 0.2);
+        }
 
-/* HERO SECTION */
-.hero {
-  position: relative;
-  height: 85vh;
-  width: 100%;
-  background: url('<?php echo $movie['image_path']; ?>') center/contain no-repeat;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: hidden;
-  margin-top: 80px; /* push hero down so navbar doesn't overlap */
-}
+        /* Button styling */
+        .select-btn {
+            background: #a40000;
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
 
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(255,0,0,0.1));
-}
+        .select-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(164, 0, 0, 0.4);
+            background: #8e0000;
+        }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  padding-bottom: 60px;
-}
+        .select-btn:active {
+            transform: translateY(0);
+        }
 
-.hero h1 {
-  font-family: 'Manrope', sans-serif;
-  font-size: 3rem;
-  color: var(--accent-color);
-  text-shadow: 0 0 20px #ff0000, 0 0 40px #fff;
-}
+        /* Link styling */
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
 
-.hero p {
-  color: #ccc;
-  margin-top: 12px;
-  text-shadow: 0 0 8px #ff1a1a;
-}
+        .nav-link:hover {
+            color: #ff6b6b;
+        }
 
-/* CINEMA GRID */
-.cinema-card {
-  background: var(--card-bg);
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(255,0,0,0.3);
-  transition: all 0.3s ease;
-  color: var(--text-color);
-}
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: #ff6b6b;
+            transition: width 0.3s ease;
+        }
 
-.light-mode .cinema-card {
-  color: #330000;
-}
+        .nav-link:hover::after {
+            width: 100%;
+        }
 
-.cinema-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px var(--accent-color), 0 0 35px rgba(255,77,77,0.3);
-}
+        /* Cinema card styling */
+        .cinema-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
 
-/* BUTTONS */
-.glow-btn {
-    background: linear-gradient(90deg, #fff, #ff0000);
-    color: black;
-    font-weight: bold;
-    padding: 10px 24px;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(255,255,255,0.4);
-}
-.glow-btn:hover {
-      transform: scale(1.07);
-      background: linear-gradient(90deg, #ff0000, #fff);
-      box-shadow: 0 0 35px rgba(255,0,0,0.6);
-}
+        .cinema-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(164, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
 
-/* NAVBAR */
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: linear-gradient(90deg, #220000, #440000);
-  padding: 15px 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 10;
-  backdrop-filter: blur(8px);
-}
+        /* Clean typography */
+        .form-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: white;
+        }
 
-.navbar h1 {
-  color: var(--accent-color);
-  font-size: 2rem;
-  font-weight: 900;
-}
+        .form-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+        }
 
-.navbar a, .back-btn-navbar {
-  margin-left: 25px;
-  color: #fff;
-  transition: 0.3s;
-  text-decoration: none;
-}
-.navbar a:hover, .back-btn-navbar:hover {
-  color: #ff4d4d;
-}
+        .heading {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: white;
+        }
 
-/* BACK BUTTON IN NAVBAR */
-.back-btn-navbar {
-  padding: 8px 16px;
-  border: 1px solid var(--accent-color);
-  border-radius: 10px;
-  font-weight: 600;
-  transition: 0.3s;
-}
-
-/* LIGHT/DARK MODE */
-.toggle-btn {
-  background: #222;
-  color: #fff;
-  border: none;
-  border-radius: 20px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.4s;
-}
-.toggle-btn:hover { background: var(--accent-color); }
-.light-mode .toggle-btn { background: #ddd; color: #000; }
-
-  </style>
+        /* Status card glow effect */
+        .dark .status-card-glow:hover {
+            box-shadow: 0 10px 40px rgba(164, 0, 0, 0.2);
+        }
+    </style>
 </head>
+<body class="bg-black text-white min-h-screen font-sans">
 
-<body>
-  <!-- NAVBAR -->
-  <div class="navbar">
-    <h1>ZTAVerse</h1>
-    <div class="flex items-center">
-      <a href="IndexMiniP.php" class="back-btn-navbar">← Back to Movies</a>
-      <a href="LogoutMiniP.php" class="ml-4 underline underline-offset-4 hover:text-red-500 transition-all duration-300">Logout</a>
-      <button id="modeToggle" class="toggle-btn ml-4">☀ Light Mode</button>
+    <!-- Background Image with Subtle Overlay -->
+    <div class="absolute inset-0 z-0">
+        <img src="https://i.pinimg.com/1200x/f0/b0/c3/f0b0c339e09dfaa74f7c8f68b94a5ce3.jpg" 
+             alt="Cinema Background" 
+             class="w-full h-full object-cover opacity-80 dark:opacity-60">
+        <div class="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/70"></div>
     </div>
-  </div>
 
-  <!-- HERO SECTION -->
-  <div class="hero">
-    <div class="hero-content">
-      <h1><?php echo $movie['movie_title']; ?></h1>
-      <p><?php echo $movie['pg_rating']; ?> | <?php echo $movie['genre']; ?> | <?php echo $movie['duration']; ?></p>
-    </div>
-  </div>
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 shadow-2xl border-b border-gray-900 
+                 bg-white/90 backdrop-blur-md
+                 dark:bg-darkbg/95 dark:border-primary-700/50 dark:shadow-none">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20"> 
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl font-bold text-gray-900 dark:text-white heading tracking-wider">Theatre Zenith Atrium</span>
+                </div>
 
-  <!-- CINEMA SELECTION -->
-  <div class="px-10 py-16 text-center">
-    <h2 class="text-3xl font-bold mb-10">Select Your Cinema</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-center max-w-6xl mx-auto">
-      <?php foreach($cinema as $cin): ?>
-        <div class="cinema-card">
-          <h3 class="text-xl font-bold mb-2 text-red-500"><?php echo $cin['location']; ?></h3>
-          <p class="mb-1"><?php echo $cin['experience']; ?></p>
-          <p class="mb-1">📅 <?php echo $cin['date']; ?></p>
-          <p class="mb-4">🕒 <?php echo $cin['showtime']; ?></p>
-          <form action="SeatsMiniP.php" method="GET">
-            <input type="hidden" name="cinema_id" value="<?php echo $cin['cinema_id']; ?>">
-            <input type="hidden" name="movie_id" value="<?php echo $movie['movie_id']; ?>">
-            <button type="submit" class="glow-btn w-full">Select</button>
-          </form>
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" title="Toggle Dark Mode" class="p-3 rounded-full bg-gray-200 dark:bg-cardbg text-gray-700 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-500 transition-colors duration-300 shadow-md">
+                        <i class="fas fa-moon dark:hidden text-xl"></i>
+                        <i class="fas fa-sun hidden dark:block text-xl"></i>
+                    </button>
+                    
+                    <div class="flex items-center space-x-3 group relative">
+                        <div class="hidden md:block text-right">
+                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-xs"> 
+                                <?php echo htmlspecialchars($_SESSION['email_address'] ?? 'Guest User'); ?>
+                            </div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 group-hover:text-primary-500 transition-colors">
+                                <a href="LogoutMiniP.php" class="hover:underline transition-colors">Sign Out</a>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-primary-500">
+                                <?php echo strtoupper(substr($_SESSION['email_address'] ?? 'G', 0, 1)); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      <?php endforeach; ?>
-    </div>
-    <p class="text-gray-500 text-sm mt-12">© 2025 ZTAVerse Movie Booking System</p>
-  </div>
+    </nav>
 
-  <!-- LIGHT/DARK MODE JS -->
-  <script>
-    const toggleBtn = document.getElementById('modeToggle');
-    toggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('light-mode');
-      toggleBtn.textContent = document.body.classList.contains('light-mode') ? '🌙 Dark Mode' : '☀ Light Mode';
-    });
-  </script>
+    <!-- Main Content -->
+    <main class="relative z-10 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Welcome Status Card -->
+            <div class="bg-lightcard dark:bg-cardbg rounded-xl p-8 shadow-2xl transition-shadow status-card-glow
+                        border border-gray-200 dark:border-primary-500/50 hover:scale-[1.005] mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <h2 class="text-3xl heading text-gray-900 dark:text-white">
+                            Welcome, <?php echo htmlspecialchars(explode('@', $_SESSION['email_address'] ?? 'Guest')[0]); ?>!
+                        </h2>
+                        <p class="text-md text-gray-600 dark:text-gray-400 mt-1 form-text">
+                            Choose your preferred cinema experience for
+                        </p>
+                    </div>
+                    
+                    <h2 class="text-2xl heading text-primary-500">
+                        "<?php echo htmlspecialchars($movie['movie_title']); ?>"
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Cinema Selection Grid -->
+            <div class="glass-container rounded-2xl p-8">
+                <div class="pb-6 mb-8 border-b-4 border-primary-500/70">
+                    <h2 class="text-4xl heading text-white pl-0 mb-2">
+                        Available Cinemas
+                    </h2>
+                    <p class="text-lg text-white/70 form-text pl-0">
+                        Select your preferred cinema, date, and showtime.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <?php foreach($cinema as $cin): ?>
+                    <div class="cinema-card rounded-xl p-6 text-center">
+                        <div class="mb-4">
+                            <h3 class="text-xl heading text-white mb-2">
+                                <?php echo htmlspecialchars($cin['location']); ?>
+                            </h3>
+                            <div class="bg-primary-500/20 border border-primary-500/30 rounded-lg py-2 px-4 mb-3">
+                                <span class="text-primary-400 font-semibold form-text">
+                                    <?php echo htmlspecialchars($cin['experience']); ?>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 mb-6">
+                            <div class="flex items-center justify-center space-x-2 text-white/80 form-text">
+                                <i class="far fa-calendar text-primary-500"></i>
+                                <span><?php echo htmlspecialchars($cin['date']); ?></span>
+                            </div>
+                            <div class="flex items-center justify-center space-x-2 text-white/80 form-text">
+                                <i class="far fa-clock text-primary-500"></i>
+                                <span><?php echo htmlspecialchars($cin['showtime']); ?></span>
+                            </div>
+                        </div>
+
+                        <form action="SeatsMiniP.php" method="GET" class="mt-4">
+                            <input type="hidden" name="cinema_id" value="<?php echo $cin['cinema_id']; ?>">
+                            <input type="hidden" name="movie_id" value="<?php echo $movie['movie_id']; ?>">
+                            <button type="submit" 
+                                    class="w-full py-3 rounded-lg select-btn font-semibold transform hover:scale-[1.02] transition-transform">
+                                <i class="fas fa-chair mr-2"></i>
+                                Select Seats
+                            </button>
+                        </form>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php if (empty($cinema)): ?>
+                <div class="text-center py-12">
+                    <i class="fas fa-film text-5xl text-gray-400 mb-4"></i>
+                    <h3 class="text-xl heading text-gray-400 mb-2">
+                        No cinema sessions available
+                    </h3>
+                    <p class="text-gray-500 form-text">
+                        Please check back later for available sessions.
+                    </p>
+                    <a href="IndexMiniP.php" class="inline-block mt-4 py-2 px-6 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors">
+                        Back to Movies
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Back to Movies -->
+            <div class="text-center mt-8">
+                <a href="IndexMiniP.php" class="nav-link font-semibold text-lg">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Movies
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 bg-white/90 backdrop-blur-md border-t border-gray-300 dark:bg-black/80 dark:border-gray-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <span class="text-xl font-bold text-gray-900 dark:text-white heading"> Theatre Zenith Atrium</span>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-600 dark:text-gray-400 text-sm form-text">© 2023 Theatre Zenith Atrium. All rights reserved.</p>
+                    <p class="text-gray-500 dark:text-gray-500 text-xs mt-1 form-text">Design inspired by modern cinematic interfaces.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Theme Toggle Functionality ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        // 1. Initial setup (Check localStorage or system preference)
+        const isDarkMode = localStorage.getItem('color-theme') === 'dark' || 
+                            (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+        if (isDarkMode) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+        
+        // 2. Toggle Handler
+        themeToggle.addEventListener('click', function() {
+            const isCurrentlyDark = htmlElement.classList.toggle('dark');
+            
+            if (isCurrentlyDark) {
+                localStorage.setItem('color-theme', 'dark');
+            } else {
+                localStorage.setItem('color-theme', 'light');
+            }
+        });
+    </script>
 </body>
 </html>
