@@ -9,7 +9,7 @@ if($_POST) {
     $result = login($email_address, $password); 
     
     if($result){ 
-        $_SESSION['user_id'] = $result['user_id'];  // ✅ FIXED! Use $result instead of $user
+        $_SESSION['user_id'] = $result['user_id'];
         $_SESSION['email_address'] = $result['email_address']; 
         header("Location: IndexMiniP.php"); 
         exit(); 
@@ -19,199 +19,308 @@ if($_POST) {
 } 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Custom font and animation overrides */
-    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@700&family=Nunito:wght@600&family=Urbanist:wght@600&family=Inter&family=Saira+Semi+Condensed:wght@400;700&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - TZA Theatre Zenith Atrium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // --- Tailwind Configuration (Cinematic Red Theme) ---
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#a40000', // CINEMATIC RED 
+                            600: '#8e0000', 
+                            700: '#730000', 
+                        },
+                        darkbg: '#0a0a0a', // Near-black background
+                        cardbg: '#181818', // Slightly lighter for card contrast
+                        lightcard: '#f0f0f0', 
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* --- Global Transitions --- */
+        * {
+            transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out, transform 0.3s ease-in-out;
+        }
 
-    body {
-      background-image: url('https://i.pinimg.com/1200x/59/ec/a7/59eca7aafe53bb2b91466b48f57fa731.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      font-family: 'Saira Semi Condensed', 'Arial', sans-serif;
-      color: #fff;
-      overflow: hidden;
-    }
+        /* Glass morphism effect */
+        .glass-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
 
-    h1 {
-      font-family: 'Manrope', 'Urbanist', 'Nunito', sans-serif;
-      font-size: 2.5em;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: #ffffff;
-      margin: 0;
-      text-shadow: 
-        0 0 10px rgba(255, 255, 255, 0.4),
-        0 0 30px rgba(255, 0, 0, 0.2);
-      transition: transform 0.4s ease, text-shadow 0.4s ease;
-    }
+        .dark .glass-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(164, 0, 0, 0.2);
+        }
 
-    h1:hover {
-      transform: scale(1.03);
-      text-shadow: 
-        0 0 20px rgba(255, 255, 255, 0.8),
-        0 0 40px rgba(255, 0, 0, 0.5);
-    }
+        /* Input styling */
+        .input-field {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
 
-    .subtitle {
-      font-family: 'Inter', 'Roboto', sans-serif;
-      font-size: 1em;
-      color: rgba(255, 255, 255, 0.75);
-      line-height: 1.5;
-      margin-top: 10px;
-      letter-spacing: 0.3px;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-    }
+        .input-field:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(164, 0, 0, 0.5);
+            outline: none;
+            transform: scale(1.02);
+        }
 
-    .left-panel h1, .left-panel .subtitle {
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeUp 0.8s ease forwards;
-    }
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Inter', sans-serif;
+        }
 
-    .left-panel .subtitle {
-      animation-delay: 0.2s;
-    }
+        /* Button styling */
+        .login-btn {
+            background: #a40000;
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
 
-    @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(164, 0, 0, 0.4);
+            background: #8e0000;
+        }
 
-    input[type="email"],
-    input[type="password"] {
-      background-color: rgba(19, 19, 19, 0.62);
-      color: #ffffff;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-      transition: background-color 0.3s, box-shadow 0.4s ease;
-    }
+        .login-btn:active {
+            transform: translateY(0);
+        }
 
-    input[type="email"]:focus,
-    input[type="password"]:focus {
-      background-color: rgba(25, 25, 25, 0.8);
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.7),
-                  0 0 25px rgba(255, 255, 255, 0.3);
-      outline: none;
-    }
+        /* Link styling */
+        .register-link {
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
 
-    input[type="email"]:not(:placeholder-shown),
-    input[type="password"]:not(:placeholder-shown) {
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.7),
-                  0 0 25px rgba(255, 255, 255, 0.3);
-    }
+        .register-link:hover {
+            color: #ff6b6b;
+        }
 
-    input[type="submit"] {
-      transition: 
-        background-color 0.3s ease,
-        transform 0.15s ease,
-        box-shadow 0.3s ease;
-    }
+        .register-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: #ff6b6b;
+            transition: width 0.3s ease;
+        }
 
-    input[type="submit"]:hover {
-      transform: scale(1.07);
-      background-color: #f2f2f2;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-    }
+        .register-link:hover::after {
+            width: 100%;
+        }
 
-    input[type="submit"]:active {
-      transform: scale(0.97);
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-    }
+        /* Background animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    input[type="submit"]:focus {
-      outline: none;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-    }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
 
-    .register-link-group a {
-      color: #ffffff;
-      position: relative;
-      transition: 
-        color 0.3s ease,
-        text-shadow 0.3s ease,
-        transform 0.2s ease;
-    }
+        /* Clean typography */
+        .form-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
 
-    .register-link-group a:hover {
-      color: #a40000ff;
-      text-shadow: 0 0 8px rgba(185, 2, 2, 0.97);
-      transform: scale(1.05);
-    }
+        .form-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+        }
 
-    .register-link-group a::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: -2px;
-      width: 0%;
-      height: 2px;
-      background: #ff0000e8;
-      transition: width 0.3s ease;
-    }
-
-    .register-link-group a:hover::after {
-      width: 100%;
-    }
-
-    .clear-glass {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      box-shadow: 0 4px 40px rgba(0, 0, 0, 0.05);
-    }
-  </style>
+        .heading {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+    </style>
 </head>
-<body class="flex justify-center items-center min-h-screen">
-
-  <div class="main-glass-container flex w-[95%] max-w-[1000px] min-h-[650px] rounded-2xl overflow-hidden shadow-[0_10px_75px_rgba(0,0,0,1)]">
-
-    <!-- LEFT PANEL -->
-    <div class="left-panel flex-[2] bg-[rgba(15,15,15,0.88)] backdrop-blur-sm p-12 flex flex-col justify-center rounded-l-2xl">
-      <h1>Login</h1>
-      <p class="subtitle">Welcome back! Please enter your details to access your cinema account.</p>
-      <br>
-
-      <form method="POST" class="flex flex-col gap-5">
-        <input type="email" name="email_address" placeholder="Email Address" required
-          class="w-full px-4 py-3 rounded-md border-none text-white text-base placeholder-gray-400">
-        <input type="password" name="password" placeholder="Password" required
-          class="w-full px-4 py-3 rounded-md border-none text-white text-base placeholder-gray-400">
-        <input type="submit" value="Login"
-          class="mt-5 bg-white text-black font-bold text-lg rounded-md py-3 cursor-pointer">
-      </form>
-
-      <p class="register-link-group text-center mt-8 text-sm text-[rgba(255,255,255,0.7)]">
-        Don't have an account? <a href="RegisterMiniP.php">Register here</a>
-      </p>
+<body class="bg-white text-gray-900 dark:bg-darkbg dark:text-white min-h-screen font-sans flex items-center justify-center">
+    
+    <!-- Background Image with Subtle Overlay -->
+    <div class="absolute inset-0 z-0">
+        <img src="https://i.pinimg.com/1200x/f0/b0/c3/f0b0c339e09dfaa74f7c8f68b94a5ce3.jpg" 
+             alt="Cinema Background" 
+             class="w-full h-full object-cover opacity-80 dark:opacity-60">
+        <div class="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/70"></div>
     </div>
 
-    <!-- RIGHT PANEL -->
-    <div class="right-panel flex-[3] flex justify-center items-center border border-[rgba(255,255,255,0.1)] border-l-0 shadow-[inset_1px_0_10px_rgba(255,255,255,0.05)] rounded-r-2xl">
+    <!-- Theme Toggle Button -->
+    <div class="absolute top-6 right-6 z-50">
+        <button id="theme-toggle" title="Toggle Dark Mode" class="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:text-primary-500 dark:hover:text-primary-500 transition-all duration-300 shadow-lg hover:scale-110">
+            <i class="fas fa-moon dark:hidden text-xl"></i>
+            <i class="fas fa-sun hidden dark:block text-xl"></i>
+        </button>
     </div>
 
-  </div>
+    <!-- Main Content -->
+    <div class="relative z-10 w-full max-w-4xl mx-4">
+        <div class="glass-container rounded-2xl overflow-hidden animate-fade-in-up border border-white/10">
+            <div class="flex flex-col md:flex-row min-h-[600px]">
+                
+                <!-- Left Panel - Brand & Visual -->
+                <div class="md:w-2/5 p-8 flex flex-col justify-center items-center text-center relative">
+                    <!-- Subtle background image on left panel -->
+                    <div class="absolute inset-0 z-0 opacity-20">
+                        <img src="https://i.pinimg.com/1200x/f0/b0/c3/f0b0c339e09dfaa74f7c8f68b94a5ce3.jpg" 
+                             alt="Background" 
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
+                    </div>
+                    
+                    <div class="relative z-10">
+                        <h1 class="text-2xl heading text-white mb-2">
+                            Welcome Back
+                        </h1>
+                        <p class="text-white/70 form-text">
+                            to Theatre Zenith Atrium
+                        </p>
+                    </div>
+                </div>
 
-  <script src="following-dot-cursor.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      followingDotCursor({
-        color: "#804309d0",
-        zIndex: "999999"
-      });
-    });
-  </script>
+                <!-- Right Panel - Login Form -->
+                <div class="md:w-3/5 p-12 flex flex-col justify-center relative">
+                    <!-- Subtle background on right panel -->
+                    <div class="absolute inset-0 z-0 opacity-10">
+                        <div class="w-full h-full bg-gradient-to-l from-primary-500/20 to-transparent"></div>
+                    </div>
+                    
+                    <div class="relative z-10">
+                        <div class="mb-8">
+                            <h2 class="text-3xl heading text-white mb-3">
+                                Sign In
+                            </h2>
+                            <p class="text-white/70 form-text">
+                                Enter your account details
+                            </p>
+                        </div>
+
+                        <form method="POST" class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-white/80 text-sm form-label">Email Address</label>
+                                <input type="email" 
+                                       name="email_address" 
+                                       placeholder="Enter your email" 
+                                       required
+                                       class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/60">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-white/80 text-sm form-label">Password</label>
+                                <input type="password" 
+                                       name="password" 
+                                       placeholder="Enter your password" 
+                                       required
+                                       class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/60">
+                            </div>
+
+                            <button type="submit" 
+                                    class="w-full py-4 rounded-lg login-btn text-lg font-semibold mt-6 transform hover:scale-[1.02] transition-transform">
+                                <i class="fas fa-sign-in-alt mr-2"></i>
+                                Sign In
+                            </button>
+                        </form>
+
+                        <div class="mt-8 text-center">
+                            <p class="text-white/70 form-text">
+                                Don't have an account? 
+                                <a href="RegisterMiniP.php" class="register-link font-semibold ml-1">
+                                    Create Account
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="text-center mt-6">
+            <p class="text-white/50 text-sm form-text">
+                © 2023 Theatre Zenith Atrium
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // --- Theme Toggle Functionality ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        // 1. Initial setup (Check localStorage or system preference)
+        const isDarkMode = localStorage.getItem('color-theme') === 'dark' || 
+                            (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+        if (isDarkMode) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+        
+        // 2. Toggle Handler
+        themeToggle.addEventListener('click', function() {
+            const isCurrentlyDark = htmlElement.classList.toggle('dark');
+            
+            if (isCurrentlyDark) {
+                localStorage.setItem('color-theme', 'dark');
+            } else {
+                localStorage.setItem('color-theme', 'light');
+            }
+        });
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.input-field');
+            
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('transform', 'scale-105');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('transform', 'scale-105');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
-
