@@ -62,25 +62,32 @@ if($_POST) {
 
         /* Glass morphism effect */
         .glass-container {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
         }
 
         .dark .glass-container {
             background: rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(164, 0, 0, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
 
         /* Input styling */
         .input-field, .select-box {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
+            color: #1f2937;
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
+        }
+
+        .dark .input-field, .dark .select-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
         }
 
         .input-field:focus, .select-box:hover {
@@ -91,8 +98,12 @@ if($_POST) {
         }
 
         .input-field::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(107, 114, 128, 0.8);
             font-family: 'Inter', sans-serif;
+        }
+
+        .dark .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         /* Button styling */
@@ -119,14 +130,18 @@ if($_POST) {
 
         /* Link styling */
         .login-link {
-            color: rgba(255, 255, 255, 0.9);
+            color: #4b5563;
             transition: all 0.3s ease;
             position: relative;
             font-family: 'Inter', sans-serif;
         }
 
+        .dark .login-link {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
         .login-link:hover {
-            color: #ff6b6b;
+            color: #a40000;
         }
 
         .login-link::after {
@@ -136,7 +151,7 @@ if($_POST) {
             height: 2px;
             bottom: -2px;
             left: 0;
-            background: #ff6b6b;
+            background: #a40000;
             transition: width 0.3s ease;
         }
 
@@ -147,13 +162,17 @@ if($_POST) {
         /* Radio button styling */
         input[type="radio"] {
             appearance: none;
-            border: 2px solid rgba(255, 255, 255, 0.6);
+            border: 2px solid rgba(107, 114, 128, 0.6);
             border-radius: 50%;
             width: 18px;
             height: 18px;
             cursor: pointer;
             position: relative;
             transition: 0.25s;
+        }
+
+        .dark input[type="radio"] {
+            border: 2px solid rgba(255, 255, 255, 0.6);
         }
 
         input[type="radio"]:checked {
@@ -173,15 +192,14 @@ if($_POST) {
 
         /* Date input styling */
         input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1) brightness(2);
+            filter: invert(0.5);
             opacity: 0.9;
             cursor: pointer;
             transition: transform 0.2s, opacity 0.2s;
         }
 
-        input[type="date"]::-webkit-calendar-picker-indicator:hover {
-            transform: scale(1.2);
-            opacity: 1;
+        .dark input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(2);
         }
 
         /* Custom dropdown styling */
@@ -203,12 +221,16 @@ if($_POST) {
         .select-arrow { 
             width: 18px; 
             height: 18px; 
-            fill: #ccc; 
+            fill: #6b7280; 
             transition: 0.3s; 
         }
 
+        .dark .select-arrow { 
+            fill: #ccc; 
+        }
+
         .select-box:hover .select-arrow { 
-            fill: #fff; 
+            fill: #a40000; 
             transform: rotate(180deg); 
         }
 
@@ -218,13 +240,18 @@ if($_POST) {
             margin-top: 5px;
             padding: 0;
             list-style: none;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 8px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             display: none;
             z-index: 10;
             max-height: 220px;
             overflow-y: auto;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .options {
+            background: rgba(0, 0, 0, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
@@ -232,13 +259,21 @@ if($_POST) {
             padding: 12px 15px;
             cursor: pointer;
             transition: background 0.2s, transform 0.2s;
-            color: white;
+            color: #1f2937;
             font-family: 'Inter', sans-serif;
         }
 
+        .dark .options li {
+            color: white;
+        }
+
         .options li:hover {
-            background: rgba(164, 0, 0, 0.3);
+            background: rgba(164, 0, 0, 0.1);
             transform: scale(1.01);
+        }
+
+        .dark .options li:hover {
+            background: rgba(164, 0, 0, 0.3);
         }
 
         /* Background animation */
@@ -261,45 +296,47 @@ if($_POST) {
         .form-label {
             font-family: 'Inter', sans-serif;
             font-weight: 500;
+            color: #374151;
+        }
+
+        .dark .form-label {
             color: white;
         }
 
         .form-text {
             font-family: 'Inter', sans-serif;
             font-weight: 400;
+            color: #6b7280;
+        }
+
+        .dark .form-text {
             color: rgba(255, 255, 255, 0.9);
         }
 
         .heading {
             font-family: 'Inter', sans-serif;
             font-weight: 600;
-            color: white;
+            color: #1f2937;
         }
 
-        /* Ensure all text is visible in both light and dark modes */
-        .container-text {
+        .dark .heading {
             color: white;
-        }
-
-        /* Black background for entire page in light mode */
-        body:not(.dark) {
-            background: #0a0a0a !important;
         }
     </style>
 </head>
-<body class="bg-darkbg text-white min-h-screen font-sans flex items-center justify-center">
+<body class="bg-white text-gray-900 dark:bg-darkbg dark:text-white min-h-screen font-sans flex items-center justify-center">
     
     <!-- Background Image with Subtle Overlay -->
     <div class="absolute inset-0 z-0">
         <img src="https://i.pinimg.com/1200x/f0/b0/c3/f0b0c339e09dfaa74f7c8f68b94a5ce3.jpg" 
              alt="Cinema Background" 
-             class="w-full h-full object-cover opacity-80 dark:opacity-60">
-        <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80"></div>
+             class="w-full h-full object-cover opacity-60 dark:opacity-60">
+        <div class="absolute inset-0 bg-white/40 dark:bg-black/70"></div>
     </div>
 
     <!-- Theme Toggle Button -->
     <div class="absolute top-6 right-6 z-50">
-        <button id="theme-toggle" title="Toggle Dark Mode" class="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:text-primary-500 dark:hover:text-primary-500 transition-all duration-300 shadow-lg hover:scale-110">
+        <button id="theme-toggle" title="Toggle Dark Mode" class="p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-gray-700 hover:text-primary-500 dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:text-primary-500 transition-all duration-300 shadow-lg hover:scale-110">
             <i class="fas fa-moon dark:hidden text-xl"></i>
             <i class="fas fa-sun hidden dark:block text-xl"></i>
         </button>
@@ -307,14 +344,14 @@ if($_POST) {
 
     <!-- Main Content - Single Centered Container -->
     <div class="relative z-10 w-full max-w-4xl mx-4">
-        <div class="glass-container rounded-2xl overflow-hidden animate-fade-in-up border border-white/10 p-12">
+        <div class="glass-container rounded-2xl overflow-hidden animate-fade-in-up p-12">
             
             <!-- Header -->
-            <div class="text-center mb-8 container-text">
+            <div class="text-center mb-8">
                 <h2 class="text-3xl heading mb-2">
                     Create Account
                 </h2>
-                <p class="text-white/90 form-text">
+                <p class="form-text">
                     Join Theatre Zenith Atrium
                 </p>
             </div>
@@ -324,60 +361,60 @@ if($_POST) {
                 <!-- Left Column -->
                 <div class="space-y-4">
                     <div class="space-y-2">
-                        <label class="text-white/90 text-sm form-label">Full Name</label>
+                        <label class="text-sm form-label">Full Name</label>
                         <input type="text" 
                                name="full_name" 
                                placeholder="Enter your full name" 
                                required
-                               class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/70">
+                               class="w-full px-4 py-3 rounded-lg input-field placeholder-gray-500 dark:placeholder-white/70">
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-white/90 text-sm form-label">Mobile Number</label>
+                        <label class="text-sm form-label">Mobile Number</label>
                         <input type="tel" 
                                name="mobile_number" 
                                placeholder="Enter your mobile number" 
                                required
-                               class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/70">
+                               class="w-full px-4 py-3 rounded-lg input-field placeholder-gray-500 dark:placeholder-white/70">
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-white/90 text-sm form-label">Email Address</label>
+                        <label class="text-sm form-label">Email Address</label>
                         <input type="email" 
                                name="email_address" 
                                placeholder="Enter your email" 
                                required
-                               class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/70">
+                               class="w-full px-4 py-3 rounded-lg input-field placeholder-gray-500 dark:placeholder-white/70">
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-white/90 text-sm form-label">Password</label>
+                        <label class="text-sm form-label">Password</label>
                         <input type="password" 
                                name="password" 
                                placeholder="Create a password" 
                                required
-                               class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/70">
+                               class="w-full px-4 py-3 rounded-lg input-field placeholder-gray-500 dark:placeholder-white/70">
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-white/90 text-sm form-label">Date of Birth</label>
+                        <label class="text-sm form-label">Date of Birth</label>
                         <input type="date" 
                                name="date_of_birth" 
                                required
-                               class="w-full px-4 py-3 rounded-lg input-field text-white">
+                               class="w-full px-4 py-3 rounded-lg input-field">
                     </div>
                 </div>
 
                 <!-- Right Column -->
                 <div class="space-y-4">
                     <div class="space-y-2">
-                        <label class="text-white/90 text-sm form-label">Gender</label>
+                        <label class="text-sm form-label">Gender</label>
                         <div class="flex items-center space-x-6">
-                            <label class="flex items-center space-x-2 text-white form-text">
+                            <label class="flex items-center space-x-2 form-text">
                                 <input type="radio" name="gender" value="Male" required>
                                 <span>Male</span>
                             </label>
-                            <label class="flex items-center space-x-2 text-white form-text">
+                            <label class="flex items-center space-x-2 form-text">
                                 <input type="radio" name="gender" value="Female">
                                 <span>Female</span>
                             </label>
@@ -385,7 +422,7 @@ if($_POST) {
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-white/90 text-sm form-label">Race</label>
+                        <label class="text-sm form-label">Race</label>
                         <div class="custom-select">
                             <div class="select-box" onclick="toggleDropdown(this)">
                                 <span class="form-text">Select Race</span>
@@ -399,7 +436,7 @@ if($_POST) {
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-white/90 text-sm form-label">Profession</label>
+                        <label class="text-sm form-label">Profession</label>
                         <div class="custom-select">
                             <div class="select-box" onclick="toggleDropdown(this)">
                                 <span class="form-text">Select Profession</span>
@@ -413,7 +450,7 @@ if($_POST) {
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-white/90 text-sm form-label">Location</label>
+                        <label class="text-sm form-label">Location</label>
                         <div class="custom-select">
                             <div class="select-box" onclick="toggleDropdown(this)">
                                 <span class="form-text">Select Location</span>
@@ -434,8 +471,8 @@ if($_POST) {
                 </button>
             </form>
 
-            <div class="mt-6 text-center container-text">
-                <p class="text-white/90 form-text">
+            <div class="mt-6 text-center">
+                <p class="form-text">
                     Already have an account? 
                     <a href="LoginMiniP.php" class="login-link font-semibold ml-1">
                         Sign In Here
@@ -445,8 +482,8 @@ if($_POST) {
         </div>
 
         <!-- Footer Note -->
-        <div class="text-center mt-6 container-text">
-            <p class="text-white/70 text-sm form-text">
+        <div class="text-center mt-6">
+            <p class="text-gray-600 dark:text-white/70 text-sm form-text">
                 © 2023 Theatre Zenith Atrium
             </p>
         </div>
