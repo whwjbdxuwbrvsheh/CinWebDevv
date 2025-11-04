@@ -504,7 +504,7 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
                     </div>
                     <div class="seating-notice text-center text-gray-900 dark:text-white heading text-lg mt-8">
                         Please select consecutive seats in the same row
-                    </div>
+                    </div><br>
                 </div>
                 <div class="flex flex-wrap justify-center gap-6 md:gap-10 mb-8">
                     <div class="flex items-center space-x-3">
