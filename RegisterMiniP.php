@@ -1,3 +1,27 @@
+<?php 
+require 'ConnMiniP.php';   
+
+// Handle form submission
+if($_POST) {   
+    $full_name = $_POST['full_name'];
+    $mobile_number = $_POST['mobile_number'];
+    $email_address = $_POST['email_address'];
+    $password = $_POST['password'];
+    $date_of_birth = $_POST['date_of_birth'];
+    $gender = $_POST['gender'];
+    $race = $_POST['race'];
+    $profession = $_POST['profession'];
+    $location = $_POST['location'];
+
+    // Register the user
+    if (register($full_name, $mobile_number, $email_address, $password, $date_of_birth, $gender, $race, $profession, $location)) {
+        echo "<script>alert('Registration successful!');</script>";
+    } else {
+        echo "<script>alert('Registration failed!');</script>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -458,4 +482,3 @@
     </script>
 </body>
 </html>
-
