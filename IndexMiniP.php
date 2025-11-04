@@ -3,37 +3,35 @@ session_start();
 require 'ConnMiniP.php';
 
 // --- MOVIE FETCH LOGIC (Simplified: No Search Filtering) ---
-// Assuming GetAllMovies() is used to fetch the complete list
 $movies = GetAllMovies(); 
 // --- END MOVIE FETCH LOGIC ---
 
+// Check if user is logged in (optional for index page)
+$is_logged_in = isset($_SESSION['email_address']);
 
-// Check if user is logged in
-if (!isset($_SESSION['email_address'])) {
-    echo "You are not logged in. <a href='LoginMiniP.php'>Login here</a>";
-    exit;
-}
-
-// Get user info
-$email = $_SESSION['email_address'];
-$sql_user = "SELECT * FROM users WHERE email_address = '$email'";
-$user_result = $conn->query($sql_user);
-$user = $user_result->fetch_assoc();
-$user_id = $user['user_id'];
-
-// Check if user has existing booking
-$sql_booking = "SELECT booking_id FROM booking WHERE user_id = '$user_id' ORDER BY booking_id DESC LIMIT 1";
-$booking_result = $conn->query($sql_booking);
-
+// Get user info only if logged in
 $has_booking = false;
 $latest_booking_id = null;
 
-if ($booking_result && $booking_result->num_rows > 0) {
-    $has_booking = true;
-    $latest_booking = $booking_result->fetch_assoc();
-    $latest_booking_id = $latest_booking['booking_id'];
+if ($is_logged_in) {
+    $email = $_SESSION['email_address'];
+    $sql_user = "SELECT * FROM users WHERE email_address = '$email'";
+    $user_result = $conn->query($sql_user);
+    $user = $user_result->fetch_assoc();
+    $user_id = $user['user_id'];
+
+    // Check if user has existing booking
+    $sql_booking = "SELECT booking_id FROM booking WHERE user_id = '$user_id' ORDER BY booking_id DESC LIMIT 1";
+    $booking_result = $conn->query($sql_booking);
+
+    if ($booking_result && $booking_result->num_rows > 0) {
+        $has_booking = true;
+        $latest_booking = $booking_result->fetch_assoc();
+        $latest_booking_id = $latest_booking['booking_id'];
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -170,7 +168,7 @@ if ($booking_result && $booking_result->num_rows > 0) {
 </head>
 <body class="bg-white text-gray-900 dark:bg-darkbg dark:text-white min-h-screen font-sans">
     
-    <nav class="sticky top-0 z-50 shadow-2xl border-b border-gray-900 
+        <nav class="sticky top-0 z-50 shadow-2xl border-b border-gray-900 
                  bg-white/90 backdrop-blur-md
                  dark:bg-darkbg/95 dark:border-primary-700/50 dark:shadow-none">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -180,6 +178,7 @@ if ($booking_result && $booking_result->num_rows > 0) {
                 </div>
 
                 <div class="flex items-center space-x-4">
+                    <!-- ADD THIS THEME TOGGLE BUTTON BACK -->
                     <button id="theme-toggle" title="Toggle Dark Mode" class="p-3 rounded-full bg-gray-200 dark:bg-cardbg text-gray-700 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-500 transition-colors duration-300 shadow-md">
                         <i class="fas fa-moon dark:hidden text-xl"></i>
                         <i class="fas fa-sun hidden dark:block text-xl"></i>
@@ -188,15 +187,19 @@ if ($booking_result && $booking_result->num_rows > 0) {
                     <div class="flex items-center space-x-3 group relative">
                         <div class="hidden md:block text-right">
                             <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-xs"> 
-                                <?php echo htmlspecialchars($_SESSION['email_address'] ?? 'Guest User'); ?>
+                                <?php echo $is_logged_in ? htmlspecialchars($_SESSION['email_address']) : 'Guest User'; ?>
                             </div>
                             <div class="text-xs text-gray-500 dark:text-gray-400 group-hover:text-primary-500 transition-colors">
-                                <a href="LogoutMiniP.php" class="hover:underline transition-colors">Sign Out</a>
+                                <?php if ($is_logged_in): ?>
+                                    <a href="LogoutMiniP.php" class="hover:underline transition-colors">Sign Out</a>
+                                <?php else: ?>
+                                    <a href="LoginMiniP.php" class="hover:underline transition-colors">Login</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="flex-shrink-0">
                             <div class="h-10 w-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-primary-500">
-                                <?php echo strtoupper(substr($_SESSION['email_address'] ?? 'G', 0, 1)); ?>
+                                <?php echo $is_logged_in ? strtoupper(substr($_SESSION['email_address'], 0, 1)) : 'G'; ?>
                             </div>
                         </div>
                     </div>
@@ -231,20 +234,28 @@ if ($booking_result && $booking_result->num_rows > 0) {
 
     <main class="py-12">
     
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
             <div class="bg-lightcard dark:bg-cardbg rounded-xl p-8 shadow-2xl transition-shadow status-card-glow
                         border border-gray-200 dark:border-primary-500/50 hover:scale-[1.005]">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="mb-4 md:mb-0">
                         <h2 class="text-3xl heading text-gray-900 dark:text-white">
-                            Welcome, <?php echo htmlspecialchars(explode('@', $_SESSION['email_address'] ?? 'Guest')[0]); ?>!
+                            <?php if ($is_logged_in): ?>
+                                Welcome, <?php echo htmlspecialchars(explode('@', $_SESSION['email_address'])[0]); ?>!
+                            <?php else: ?>
+                                Welcome to Theatre Zenith Atrium!
+                            <?php endif; ?>
                         </h2>
                         <p class="text-md text-gray-600 dark:text-gray-400 mt-1 form-text">
-                            Your current booking status is displayed below.
+                            <?php if ($is_logged_in): ?>
+                                Your current booking status is displayed below.
+                            <?php else: ?>
+                                Please login to book tickets and view your booking status.
+                            <?php endif; ?>
                         </p>
                     </div>
                     
-                    <?php if ($has_booking): ?>
+                    <?php if ($is_logged_in && $has_booking): ?>
                     <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full md:w-auto">
                         <div class="flex items-center space-x-2 bg-primary-500/10 text-primary-500 dark:bg-primary-900/40 dark:text-primary-300 py-2 px-4 rounded-full font-medium border border-primary-500 dark:border-primary-700 w-full justify-center">
                             <i class="fas fa-ticket-alt"></i>
@@ -255,9 +266,16 @@ if ($booking_result && $booking_result->num_rows > 0) {
                             <i class="fas fa-eye mr-2"></i> View Latest Ticket
                         </a>
                     </div>
-                    <?php else: ?>
+                    <?php elseif ($is_logged_in): ?>
                     <div class="text-gray-500 dark:text-gray-500 py-3 px-4 bg-gray-100 dark:bg-black/20 rounded-lg form-text">
                         <i class="fas fa-info-circle mr-2"></i> No active bookings to show. Time to watch a movie!
+                    </div>
+                    <?php else: ?>
+                    <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full md:w-auto">
+                        <a href="LoginMiniP.php" 
+                           class="bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 px-6 rounded-lg shadow-xl transition-all w-full sm:w-auto text-center transform hover:scale-105">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Login to Book Tickets
+                        </a>
                     </div>
                     <?php endif; ?>
                 </div>
