@@ -483,30 +483,29 @@ if(isset($_GET['proceed']) && (!isset($_GET['selected_seats']) || empty($_GET['s
                     </symbol>
                 </svg>
 
-                <div class="pricing-section">
+                                <div class="pricing-section">
                     <h3 class="text-3xl heading text-gray-900 dark:text-white mb-6 text-left">Seat Classes & Pricing</h3>
                     <div class="flex flex-col md:flex-row justify-center gap-6 max-w-4xl mx-auto">
-                        <div class="flex-1 text-center p-8 rounded-2xl bg-gray-900/80 dark:bg-black/80 backdrop-blur-md border border-amber-500/30 shadow-2xl shadow-amber-500/20">
-                            <div class="text-amber-400 font-bold text-xl mb-3">VIP</div>
-                            <div class="text-amber-300 font-black text-5xl mb-3">RM35</div>
-                            <div class="text-amber-400/80 text-lg font-medium">Rows A-C</div>
+                        <div class="flex-1 text-center p-8 rounded-2xl bg-white/80 dark:bg-black/80 backdrop-blur-md border border-amber-500/30 shadow-2xl shadow-amber-500/20">
+                            <div class="text-amber-600 dark:text-amber-400 font-bold text-xl mb-3">VIP</div>
+                            <div class="text-amber-700 dark:text-amber-300 font-black text-5xl mb-3">RM35</div>
+                            <div class="text-amber-600/80 dark:text-amber-400/80 text-lg font-medium">Rows A-C</div>
                         </div>
-                        <div class="flex-1 text-center p-8 rounded-2xl bg-gray-900/80 dark:bg-black/80 backdrop-blur-md border border-blue-500/30 shadow-2xl shadow-blue-500/20">
-                            <div class="text-blue-400 font-bold text-xl mb-3">Premium</div>
-                            <div class="text-blue-300 font-black text-5xl mb-3">RM25</div>
-                            <div class="text-blue-400/80 text-lg font-medium">Rows D-F</div>
+                        <div class="flex-1 text-center p-8 rounded-2xl bg-white/80 dark:bg-black/80 backdrop-blur-md border border-blue-500/30 shadow-2xl shadow-blue-500/20">
+                            <div class="text-blue-600 dark:text-blue-400 font-bold text-xl mb-3">Premium</div>
+                            <div class="text-blue-700 dark:text-blue-300 font-black text-5xl mb-3">RM25</div>
+                            <div class="text-blue-600/80 dark:text-blue-400/80 text-lg font-medium">Rows D-F</div>
                         </div>
-                        <div class="flex-1 text-center p-8 rounded-2xl bg-gray-900/80 dark:bg-black/80 backdrop-blur-md border border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
-                            <div class="text-emerald-400 font-bold text-xl mb-3">Standard</div>
-                            <div class="text-emerald-300 font-black text-5xl mb-3">RM15</div>
-                            <div class="text-emerald-400/80 text-lg font-medium">Rows G-J</div>
+                        <div class="flex-1 text-center p-8 rounded-2xl bg-white/80 dark:bg-black/80 backdrop-blur-md border border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
+                            <div class="text-emerald-600 dark:text-emerald-400 font-bold text-xl mb-3">Standard</div>
+                            <div class="text-emerald-700 dark:text-emerald-300 font-black text-5xl mb-3">RM15</div>
+                            <div class="text-emerald-600/80 dark:text-emerald-400/80 text-lg font-medium">Rows G-J</div>
                         </div>
                     </div>
-                    <div class="seating-notice text-center text-white heading text-lg mt-8">
-                        Please select consecutive seats in the same row 
-                    </div><br>
+                    <div class="seating-notice text-center text-gray-900 dark:text-white heading text-lg mt-8">
+                        Please select consecutive seats in the same row
+                    </div>
                 </div>
-
                 <div class="flex flex-wrap justify-center gap-6 md:gap-10 mb-8">
                     <div class="flex items-center space-x-3">
                         <svg class="cinema-seat seat-available" viewBox="0 0 60 70" width="45" height="55">
