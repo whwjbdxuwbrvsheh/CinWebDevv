@@ -377,12 +377,12 @@ if(isset($_GET['confirm_booking'])) {
                             Confirm Your Booking, <?php echo htmlspecialchars(explode('@', $_SESSION['email_address'] ?? 'Guest')[0]); ?>!
                         </h2>
                         <p class="text-md text-gray-600 dark:text-gray-300 mt-1 form-text">
-                            Please review your booking details before proceeding to payment
+                            Please review your booking details before <br> proceeding to payment
                         </p>
                     </div>
                     
                     <h2 class="text-2xl heading text-primary-500">
-                        "<?php echo htmlspecialchars($movie['movie_title']); ?>"
+                        <?php echo htmlspecialchars($movie['movie_title']); ?>
                     </h2>
                 </div>
             </div>
