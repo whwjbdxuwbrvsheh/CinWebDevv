@@ -168,7 +168,7 @@ if ($is_logged_in) {
 </head>
 <body class="bg-white text-gray-900 dark:bg-darkbg dark:text-white min-h-screen font-sans">
     
-        <nav class="sticky top-0 z-50 shadow-2xl border-b border-gray-900 
+            <nav class="sticky top-0 z-50 shadow-2xl border-b border-gray-900 
                  bg-white/90 backdrop-blur-md
                  dark:bg-darkbg/95 dark:border-primary-700/50 dark:shadow-none">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -178,11 +178,19 @@ if ($is_logged_in) {
                 </div>
 
                 <div class="flex items-center space-x-4">
-                    <!-- ADD THIS THEME TOGGLE BUTTON BACK -->
+                    <!-- Theme Toggle Button -->
                     <button id="theme-toggle" title="Toggle Dark Mode" class="p-3 rounded-full bg-gray-200 dark:bg-cardbg text-gray-700 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-500 transition-colors duration-300 shadow-md">
                         <i class="fas fa-moon dark:hidden text-xl"></i>
                         <i class="fas fa-sun hidden dark:block text-xl"></i>
                     </button>
+                    
+                    <!-- Profile Link (only show when logged in) -->
+                    <?php if ($is_logged_in): ?>
+                        <a href="ProfileMiniP.php" class="text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 transition-colors font-medium flex items-center space-x-1">
+                            <i class="fas fa-user"></i>
+                            <span class="hidden sm:inline">Profile</span>
+                        </a>
+                    <?php endif; ?>
                     
                     <div class="flex items-center space-x-3 group relative">
                         <div class="hidden md:block text-right">
