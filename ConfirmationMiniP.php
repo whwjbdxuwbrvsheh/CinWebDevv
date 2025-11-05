@@ -369,12 +369,12 @@ if(isset($_GET['confirm_booking'])) {
     <main class="relative z-10 py-12">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             
-                                    <!-- Welcome Status Card -->
+                                                <!-- Welcome Status Card -->
             <div class="bg-white dark:bg-black rounded-xl p-8 shadow-2xl transition-shadow status-card-glow hover:scale-[1.005] mb-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="mb-4 md:mb-0">
                         <h2 class="text-3xl heading text-gray-900 dark:text-white">
-                            Confirm Your Booking, <?php echo htmlspecialchars(explode('@', $_SESSION['email_address'] ?? 'Guest')[0]); ?>!
+                            Confirm Your Booking
                         </h2>
                         <p class="text-md text-gray-600 dark:text-gray-300 mt-1 form-text">
                             Please review your booking details before <br> proceeding to payment
@@ -382,7 +382,7 @@ if(isset($_GET['confirm_booking'])) {
                     </div>
                     
                     <h2 class="text-2xl heading text-primary-500">
-                        <?php echo htmlspecialchars($movie['movie_title']); ?>
+                        "<?php echo htmlspecialchars($movie['movie_title']); ?>"
                     </h2>
                 </div>
             </div>
