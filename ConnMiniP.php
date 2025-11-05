@@ -32,17 +32,17 @@ function GetUserByEmail($email) {
 }
 
 // Fetch user details by ID
-function SelectUsersByID($id){
+function getUserByID($id){
    global $conn;
-   $sql = "SELECT * FROM users WHERE id = '$id'";
+   $sql = "SELECT * FROM users WHERE user_id = '$id'";
    $result = $conn->query($sql);
    return $result->fetch_assoc();
 }
 
 // Update user details by ID
-function UpdateByID($id, $username, $email, $password){
+function UpdateByID($id, $full_name, $mobile_number, $email_address, $gender, $race, $profession, $location){
    global $conn;
-   $sql = "UPDATE users SET username='$username', email='$email', password='$password' WHERE id = '$id'";
+   $sql = "UPDATE users SET full_name='$full_name', mobile_number='$mobile_number', email_address='$email_address', gender='$gender', race='$race', profession='$profession', location='$location' WHERE user_id = '$id'";
    return $conn->query($sql);
 }
 
