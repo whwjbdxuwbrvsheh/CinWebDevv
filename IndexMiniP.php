@@ -168,7 +168,7 @@ if ($is_logged_in) {
 </head>
 <body class="bg-white text-gray-900 dark:bg-darkbg dark:text-white min-h-screen font-sans">
     
-            <nav class="sticky top-0 z-50 shadow-2xl border-b border-gray-900 
+                <nav class="sticky top-0 z-50 shadow-2xl border-b border-gray-900 
                  bg-white/90 backdrop-blur-md
                  dark:bg-darkbg/95 dark:border-primary-700/50 dark:shadow-none">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -184,33 +184,36 @@ if ($is_logged_in) {
                         <i class="fas fa-sun hidden dark:block text-xl"></i>
                     </button>
                     
-                    <!-- Profile Link (only show when logged in) -->
+                    <!-- User Profile Dropdown -->
                     <?php if ($is_logged_in): ?>
-                        <a href="ProfileMiniP.php" class="text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500 transition-colors font-medium flex items-center space-x-1">
-                            <i class="fas fa-user"></i>
-                            <span class="hidden sm:inline">Profile</span>
-                        </a>
-                    <?php endif; ?>
-                    
+                    <!-- Inside the logged-in section -->
                     <div class="flex items-center space-x-3 group relative">
                         <div class="hidden md:block text-right">
                             <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-xs"> 
-                                <?php echo $is_logged_in ? htmlspecialchars($_SESSION['email_address']) : 'Guest User'; ?>
+                                <?php echo htmlspecialchars($_SESSION['email_address']); ?>
                             </div>
-                            <div class="text-xs text-gray-500 dark:text-gray-400 group-hover:text-primary-500 transition-colors">
-                                <?php if ($is_logged_in): ?>
-                                    <a href="LogoutMiniP.php" class="hover:underline transition-colors">Sign Out</a>
-                                <?php else: ?>
-                                    <a href="LoginMiniP.php" class="hover:underline transition-colors">Login</a>
-                                <?php endif; ?>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">
+                                <a href="ProfileMiniP.php" class="hover:text-primary-500 transition-colors mr-2">Profile</a>
+                                <a href="LogoutMiniP.php" class="hover:text-primary-500 transition-colors">Sign Out</a>
                             </div>
                         </div>
-                        <div class="flex-shrink-0">
-                            <div class="h-10 w-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-primary-500">
-                                <?php echo $is_logged_in ? strtoupper(substr($_SESSION['email_address'], 0, 1)) : 'G'; ?>
+                        <a href="ProfileMiniP.php" class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-primary-500 hover:ring-primary-400 transition-colors">
+                                <?php echo strtoupper(substr($_SESSION['email_address'], 0, 1)); ?>
                             </div>
+                        </a>
+                    </div>
+                    <?php else: ?>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right">
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Guest User</div>
+                            <a href="LoginMiniP.php" class="text-xs text-gray-500 dark:text-gray-400 hover:text-primary-500 transition-colors">Login</a>
+                        </div>
+                        <div class="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-gray-400">
+                            G
                         </div>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
