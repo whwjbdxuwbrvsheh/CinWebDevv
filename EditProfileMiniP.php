@@ -180,16 +180,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </select>
             </div>
 
-            <div class="flex justify-between items-center pt-6">
-                <button type="submit"
-                    class="bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105">
-                    Save Changes
-                </button>
-                <a href="ProfileMiniP.php"
-                    class="bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all">
-                    Cancel
-                </a>
-            </div>
+     <div class="flex justify-between items-center pt-6">
+    <button type="submit"
+        class="bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105">
+        Save Changes
+    </button>
+    <a href="ProfileMiniP.php"
+        class="bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all">
+        Cancel
+    </a>
+    <a href="DeleteAccountMiniP.php"
+        onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');"
+        class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all">
+        Delete Account
+    </a>
+</div>
+
+
         </form>
     </div>
 </main>
