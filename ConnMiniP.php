@@ -196,5 +196,35 @@ function GetTicketsByBookingID($booking_id) {
 }
 
 
+function DeleteUserByID($user_id) {
+    global $conn;
+
+    // Step 1: Delete tickets linked to user's bookings
+    $conn->query("
+        DELETE t FROM ticket t
+        INNER JOIN booking b ON t.Booking_ID = b.booking_id
+        WHERE b.user_id = '$user_id'
+    ");
+
+    // Step 2: Delete payments linked to user's bookings
+    $conn->query("
+        DELETE p FROM payment p
+        INNER JOIN booking b ON p.booking_id = b.booking_id
+        WHERE b.user_id = '$user_id'
+    ");
+
+    // Step 3: Delete reviews made by this user (optional but recommended)
+    $conn->query("DELETE FROM review WHERE user_id = '$user_id'");
+
+    // Step 4: Delete bookings for this user
+    $conn->query("DELETE FROM booking WHERE user_id = '$user_id'");
+
+    // Step 5: Finally delete user record
+    $sql = "DELETE FROM users WHERE user_id = '$user_id'";
+    return $conn->query($sql);
+}
+
+
+
 
 
