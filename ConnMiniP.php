@@ -10,6 +10,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Register new user
 function register($full_name, $mobile_number, $email_address, $password, $date_of_birth, $gender, $race, $profession, $location) {
    global $conn;
+   $password = password_hash($password, PASSWORD_DEFAULT); // Hash the password for security
    $sql = "INSERT INTO users (full_name, mobile_number, email_address, password, date_of_birth, gender, race, profession, location) 
            VALUES ('$full_name', '$mobile_number', '$email_address', '$password', '$date_of_birth', '$gender', '$race', '$profession', '$location')";
    return $conn->query($sql);
@@ -18,9 +19,19 @@ function register($full_name, $mobile_number, $email_address, $password, $date_o
 // Login function to authenticate user
 function login($email_address, $password) {
    global $conn;
-   $sql = "SELECT * FROM users WHERE email_address = '$email_address' AND password = '$password'";
+   $sql = "SELECT * FROM users WHERE email_address = '$email_address'";
    $result = $conn->query($sql);
-   return $result->fetch_assoc();
+   $user = $result->fetch_assoc();
+
+   if ($user) {
+    if (password_verify($password, $user['password'])) {
+        return $user; // Authentication successful
+    } else {
+        return false; // Incorrect password
+    }
+   } else {
+    return false; // User not found
+   }
 }
 
 // Fetch user details by email address
@@ -223,7 +234,6 @@ function DeleteUserByID($user_id) {
     $sql = "DELETE FROM users WHERE user_id = '$user_id'";
     return $conn->query($sql);
 }
-
 
 
 
