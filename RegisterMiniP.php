@@ -13,14 +13,37 @@ if($_POST) {
     $profession = $_POST['profession'];
     $location = $_POST['location'];
 
+    // --- Basic form validation ---
+    if (empty($full_name) || empty($mobile_number) || empty($email_address) || empty($password) || empty($date_of_birth) || empty($gender) || empty($race) || empty($profession) || empty($location)) {
+        echo "<script>alert('Please fill in all required fields.');</script>";
+    }
+    // Validate name
+    else if (!preg_match("/^[a-zA-Z\s]*$/", $full_name)) {
+        echo "<script>alert('Full name can only contain letters and spaces.');</script>";
+    }
+    // Validate mobile number
+    else if (!preg_match("/^[0-9]{10,15}$/", $mobile_number)) {
+        echo "<script>alert('Please enter a valid mobile number (10-15 digits).');</script>";
+    }
+    // Validate email
+    else if (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>alert('Please enter a valid email address.');</script>";
+    }
+
+    else if (strlen($password) < 6) {
+        echo "<script>alert('Password must be at least 6 characters long.');</script>";
+    }
+    else {
     // Register the user
     if (register($full_name, $mobile_number, $email_address, $password, $date_of_birth, $gender, $race, $profession, $location)) {
         echo "<script>alert('Registration successful!');</script>";
     } else {
         echo "<script>alert('Registration failed!');</script>";
     }
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -285,24 +308,31 @@ if($_POST) {
                 <!-- Left Column -->
                 <div class="space-y-4">
                     <div class="space-y-2">
+                        <!-- Full Name -->
                         <label class="text-white/80 text-sm form-label">Full Name</label>
                         <input type="text" 
                                name="full_name" 
                                placeholder="Enter your full name" 
+                               pattern="[A-Za-z\s]+" 
+                               title="Full name can only contain letters and spaces."
                                required
                                class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/60">
                     </div>
 
                     <div class="space-y-2">
+                        <!-- Mobile Number -->
                         <label class="text-white/80 text-sm form-label">Mobile Number</label>
                         <input type="tel" 
                                name="mobile_number" 
-                               placeholder="Enter your mobile number" 
+                               placeholder="Enter your mobile number"
+                               pattern="[0-9]{10,15}" 
+                               title="Please enter a valid mobile number (10-15 digits)." 
                                required
                                class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/60">
                     </div>
 
                     <div class="space-y-2">
+                        <!-- Email Address -->
                         <label class="text-white/80 text-sm form-label">Email Address</label>
                         <input type="email" 
                                name="email_address" 
@@ -312,15 +342,19 @@ if($_POST) {
                     </div>
 
                     <div class="space-y-2">
+                        <!-- password -->
                         <label class="text-white/80 text-sm form-label">Password</label>
                         <input type="password" 
                                name="password" 
                                placeholder="Create a password" 
+                               minlength="6"
+                               title="Password must be at least 6 characters long."
                                required
                                class="w-full px-4 py-3 rounded-lg input-field text-white placeholder-white/60">
                     </div>
 
                     <div class="space-y-2">
+                        <!-- date of birth -->
                         <label class="text-white/80 text-sm form-label">Date of Birth</label>
                         <input type="date" 
                                name="date_of_birth" 
@@ -332,6 +366,7 @@ if($_POST) {
                 <!-- Right Column -->
                 <div class="space-y-4">
                     <div class="space-y-2">
+                        <!-- gender -->
                         <label class="text-white/80 text-sm form-label">Gender</label>
                         <div class="flex items-center space-x-6">
                             <label class="flex items-center space-x-2 text-white form-text">
@@ -346,6 +381,7 @@ if($_POST) {
                     </div>
 
                     <div class="space-y-2">
+                        <!-- race -->
                         <label class="text-white/80 text-sm form-label">Race</label>
                         <div class="custom-select">
                             <div class="select-box" onclick="toggleDropdown(this)">
@@ -355,13 +391,14 @@ if($_POST) {
                             <ul class="options">
                                 <li>Malay</li><li>Chinese</li><li>Indian</li><li>Other</li>
                             </ul>
-                            <input type="hidden" name="race">
+                            <input type="hidden" name="race" >
                         </div>
                     </div>
 
                     <div class="space-y-2">
+                        <!-- profession -->
                         <label class="text-white/80 text-sm form-label">Profession</label>
-                        <div class="custom-select">
+                        <div class="custom-select" >
                             <div class="select-box" onclick="toggleDropdown(this)">
                                 <span class="form-text">Select Profession</span>
                                 <svg class="select-arrow" viewBox="0 0 20 20"><path d="M5 7l5 5 5-5H5z"/></svg>
@@ -374,8 +411,9 @@ if($_POST) {
                     </div>
 
                     <div class="space-y-2">
+                        <!-- location -->
                         <label class="text-white/80 text-sm form-label">Location</label>
-                        <div class="custom-select">
+                        <div class="custom-select" >
                             <div class="select-box" onclick="toggleDropdown(this)">
                                 <span class="form-text">Select Location</span>
                                 <svg class="select-arrow" viewBox="0 0 20 20"><path d="M5 7l5 5 5-5H5z"/></svg>
@@ -383,7 +421,7 @@ if($_POST) {
                             <ul class="options">
                                 <li>Johor</li><li>Kedah</li><li>Kelantan</li><li>Melaka</li><li>Negeri Sembilan</li><li>Pahang</li><li>Penang</li><li>Perak</li><li>Perlis</li><li>Sabah</li><li>Sarawak</li><li>Selangor</li><li>Terengganu</li><li>Kuala Lumpur</li><li>Putrajaya</li><li>Labuan</li>
                             </ul>
-                            <input type="hidden" name="location">
+                            <input type="hidden" name="location" >
                         </div>
                     </div>
                 </div>
