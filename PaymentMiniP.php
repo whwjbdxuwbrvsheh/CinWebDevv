@@ -88,6 +88,30 @@ if ($_POST) {
                 $cvv = $_POST['cvv'];
             }
         }
+
+        // validation
+        if (empty($payment_method)) {
+            echo "<script>alert('Please select a payment method.');</script>";
+        }
+        if (($payment_method == 'Bitcoin' || $payment_method == 'Monero')) {
+            if (empty($wallet_address)) {
+            echo "<script>alert('Please enter your wallet address.');</script>";
+            }
+        } else {
+            if (empty($card_number) || !preg_match('/^\d{16}$/', $card_number)) {
+                echo "<script>alert('Please enter a valid 16-digit card number.');</script>";
+            }
+            if (empty($card_name)) {
+                echo "<script>alert('Please enter the cardholder name.');</script>";;
+            }
+            if (empty($expiry_date) || !preg_match('/^(0[1-9]|1[0-2])\/\d{2}$/', $expiry_date)) {
+                echo "<script>alert('Please enter a valid expiry date in MM/YY format.');</script>";
+            }
+            if (empty($cvv) || !preg_match('/^\d{3,4}$/', $cvv)) {
+                echo "<script>alert('Please enter a valid CVV.');</script>";
+            }
+        }
+            
         
         // Execute Payment
         if (CreatePayment($booking_id, $payment_method, $card_number, $card_name, $expiry_date, $cvv, $wallet_address, $crypto_amount, $total_amount, 'Completed')) {
@@ -454,7 +478,13 @@ $card_options = GetPaymentMethodsByType('card');
                                         
                                         <div>
                                             <label class="form-label text-gray-700 dark:text-white block mb-2">Wallet Address:</label>
-                                            <input type="text" name="wallet_address" class="glass-input w-full form-text" required>
+                                            <input type="text" 
+                                            name="wallet_address" 
+                                            class="glass-input w-full form-text" 
+                                            required
+                                            placeholder="Enter your wallet address"
+                                            minlength="10"
+                                            title="Please enter a valid wallet address.">
                                         </div>
                                         <div>
                                             <label class="form-label text-gray-700 dark:text-white block mb-2">Amount (RM):</label>
@@ -465,22 +495,49 @@ $card_options = GetPaymentMethodsByType('card');
                                         </div>
 
                                     <?php } else if ($current_choice == 'Visa' || $current_choice == 'MasterCard' || $current_choice == 'American Express') { ?>
-                                        
+                            
                                         <div class="md:col-span-2">
                                             <label class="form-label text-gray-700 dark:text-white block mb-2">Card Number:</label>
-                                            <input type="text" name="card_number" class="glass-input w-full form-text" placeholder="XXXX XXXX XXXX XXXX" required>
+                                            <input type="text"
+                                            name="card_number"
+                                            class="glass-input w-full form-text"
+                                            placeholder="XXXX XXXX XXXX XXXX"
+                                            required
+                                            pattern="\d{16}"
+                                            title="Please enter a valid 16-digit card number.">
                                         </div>
+
                                         <div class="md:col-span-2">
                                             <label class="form-label text-gray-700 dark:text-white block mb-2">Cardholder Name:</label>
-                                            <input type="text" name="card_name" class="glass-input w-full form-text" placeholder="Full Name on Card" required>
+                                            <input type="text"
+                                            name="card_name"
+                                            class="glass-input w-full form-text"
+                                            placeholder="Full Name on Card" 
+                                            required
+                                            pattern="[A-Za-z\s]+"
+                                            title="Please enter a valid name.">
                                         </div>
+
                                         <div>
                                             <label class="form-label text-gray-700 dark:text-white block mb-2">Expiry Date (MM/YY):</label>
-                                            <input type="text" name="expiry_date" class="glass-input w-full form-text" placeholder="MM/YY" required>
+                                            <input type="text" 
+                                            name="expiry_date" 
+                                            class="glass-input w-full form-text" 
+                                            placeholder="MM/YY" 
+                                            required
+                                            pattern="^(0[1-9]|1[0-2])\/\d{2}$"
+                                            title="Please enter a valid expiry date in MM/YY format.">
                                         </div>
+
                                         <div>
                                             <label class="form-label text-gray-700 dark:text-white block mb-2">CVV:</label>
-                                            <input type="text" name="cvv" class="glass-input w-full form-text" placeholder="XXX" required>
+                                            <input type="text" 
+                                            name="cvv" 
+                                            class="glass-input w-full form-text" 
+                                            placeholder="XXX" 
+                                            required
+                                            pattern="\d{3}"
+                                            title="Please enter a valid CVV.">
                                         </div>
 
                                     <?php } ?>
@@ -533,9 +590,3 @@ $card_options = GetPaymentMethodsByType('card');
     </script>
 </body>
 </html>
-
-
-
-
-
-
