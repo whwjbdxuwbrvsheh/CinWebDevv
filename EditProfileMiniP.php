@@ -26,7 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $race = $_POST['race'];
     $profession = $_POST['profession'];
     $location = $_POST['location'];
-    UpdateByID($user_id, $full_name, $mobile_number, $email_address, $gender, $race, $profession, $location);
+
+    // Update user details in the database
+    if (UpdateByID($user_id, $full_name, $mobile_number, $email_address, $gender, $race, $profession, $location)) {
+        // Update session email if changed
+        $_SESSION['email_address'] = $email_address;
+    }
     header("Location: ProfileMiniP.php");
     exit();
 }
